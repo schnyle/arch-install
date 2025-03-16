@@ -53,6 +53,13 @@ sudo pacman -S pavucontrol
 ln -s /usr/bin/pavucontrol /usr/local/bin/audio
 ```
 
+## zsh
+```
+pacman -S zsh
+curl -L http://install.ohmyz.sh | sh // install oh my zsh for configs, themes, and plugins
+chsh -s /usr/bin/zsh // set zsh as default shell
+```
+
 ## yay (Arch User Repository helper)
 ```
 pacman -S --needed git base-devel
@@ -88,7 +95,7 @@ Extensions
 ## Steam
 First, enable multilib repo for 32-bit libraries. Uncomment the following lines from `/etc/pacman.conf`:
 ```
-[multilib]
+[multilib]    
 Include = /etc/pacman.d/mirrorlist
 ```
 Then
@@ -97,6 +104,15 @@ sudo pacman -Syu
 sudo pacman -S steam
 sudo pacman -S lib32-nvidia-utils
 ```
+
+## QMK
+
+```
+sudo pacman -S qmk
+qmk setup -H /path/to/install
+```
+
+https://docs.qmk.fm/newbs_getting_started
 
 ## Other
 ```

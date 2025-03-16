@@ -1,20 +1,21 @@
 # Programs
 
+- `alacritty` - terminal emulator
 - `arandr` - monitor placement GUI tool
+- `cmake` - tool for building applications
+- `git base-devel` - for installing yay
+- `i3` - window manager
+- `lib32-nvidia-utils` - nvidia 32 bit library
 - `nano` - text editor
 - `networkmanager` - network manager
-- `vim` - text editor
-- `pulseaudio` - sound server
-- `pavucontrol` - sound settings GUI tool
-- `i3` - window manager
-- `xorg-server xorg-init xorg-apps` - graphics interface
 - `nvidia nvidia-utils nvidia-settings` - nvidia drivers
-- `alacritty` - terminal emulator
 - `openssh` - secure networking utils
-- `git base-devel` - for installing yay
-- `visual-studio-code-bin` - vscode (AUR)
-- `steam` - vidya games
-- `lib32-nvidia-utils` - nvidia 32 bit library
-- `tmux` - terminal management tool
-- `xclip` - clipboard utility
+- `pavucontrol` - sound settings GUI tool
 - `picom` - graphics compositor
+- `pulseaudio` - sound server
+- `steam` - vidya games
+- `tmux` - terminal management tool
+- `vim` - text editor
+- `visual-studio-code-bin` - vscode (AUR)
+- `xclip` - clipboard utility
+- `xorg-server xorg-init xorg-apps` - graphics interface
