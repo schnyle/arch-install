@@ -7,6 +7,8 @@
 #include <string>
 #include <vector>
 
+#include "helpers.hpp"
+
 namespace espaceCodes
 {
 std::string reset = "\033[0m";
@@ -16,11 +18,15 @@ std::string red = "\033[31m";
 std::string bold_red = "\033[1;31m";
 } // namespace espaceCodes
 
+namespace config
+{
+bool verbose;
+}
+
 std::vector<std::string> get_pacman_packages()
 {
   // use cmake to include `package` in the build dir, I am too lazy right now :)
   const std::string package_file_path = std::filesystem::path(std::getenv("HOME")) / "repos/arch-install/packages";
-  std::cout << "package_file_path: " << package_file_path << "\n";
   std::ifstream packages_file(package_file_path);
   if (!packages_file.is_open())
   {
@@ -32,6 +38,10 @@ std::vector<std::string> get_pacman_packages()
 
   while (std::getline(packages_file, line))
   {
+    if (line[0] == '#')
+    {
+      continue;
+    }
     lines.push_back(line);
   }
 
@@ -77,24 +87,40 @@ void installPacmanPackage(const std::string &package)
   static const std::string failureText = espaceCodes::bold_red + "failure" + espaceCodes::reset;
 
   std::string command = "sudo pacman -S --noconfirm " + package;
-  std::cout << "Installing " << package << "... ";
-
   CommandResult result = executeCommand(command);
 
-  std::string status = result.success ? successText : failureText;
-  std::cout << "[" << status << "]\n";
-  std::cout << result.output << "\n";
-
-  if (!result.success)
+  if (config::verbose)
   {
-    std::cout << "Error installing package: " << package << ":\n" << result.output;
+    std::cout << "Installing " << package << "...\n";
+    std::cout << remove_consecutive_newlines(result.output);
+  }
+  else if (!result.success)
+  {
+    std::cout << "Failed to install " << package << ": " << result.output;
+  }
+
+  std::cout << package << ": " << "[" << (result.success ? successText : failureText) << "]\n";
+
+  if (config::verbose)
+  {
+    std::cout << "\n";
   }
 }
 
-int main()
+int main(int argc, char *argv[])
 {
-  std::cout << "~~~Installing Arch Linux~~~\n";
+  std::cout << "~~~Installing Arch Linux~~~\n\n";
 
+  for (int i = 1; i < argc; ++i)
+  {
+    const std::string arg = argv[i];
+    if (arg == "--verbose" || arg == "-v")
+    {
+      config::verbose = true;
+    }
+  }
+
+  std::cout << "Installing AUR packages\n";
   for (const auto &packageName : pacman_packages)
   {
     installPacmanPackage(packageName);

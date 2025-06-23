@@ -3,24 +3,23 @@ arandr
 base-devel
 bbc-fake-package
 cmake
-git
-i3
-lib32-nvidia-utils
-nano
-nano
-networkmanager
-nvidia
-nvidia-settings
-nvidia-utils
-openssh
-pavucontrol
-picom
-pulseaudio
-steam
-tmux
-vim
-vim 
-xclip
-xorg-apps
-xorg-init
-xorg-server
+# git
+# i3
+# lib32-nvidia-utils
+# nano
+# networkmanager
+# nvidia
+# nvidia-settings
+# nvidia-utils
+# openssh
+# pavucontrol
+# picom
+# pulseaudio
+# steam
+# tmux
+# vim
+# vim 
+# xclip
+# xorg-apps
+# xorg-init
+# xorg-server
