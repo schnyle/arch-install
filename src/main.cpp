@@ -9,14 +9,14 @@
 
 #include "helpers.hpp"
 
-namespace espaceCodes
+namespace escape_codes
 {
-std::string reset = "\033[0m";
-std::string green = "\033[32m";
-std::string bold_green = "\033[1;32m";
-std::string red = "\033[31m";
-std::string bold_red = "\033[1;31m";
-} // namespace espaceCodes
+const std::string reset = "\033[0m";
+const std::string green = "\033[32m";
+const std::string bold_green = "\033[1;32m";
+const std::string red = "\033[31m";
+const std::string bold_red = "\033[1;31m";
+} // namespace escape_codes
 
 namespace config
 {
@@ -48,26 +48,24 @@ std::vector<std::string> get_pacman_packages()
   return lines;
 };
 
-const std::vector<std::string> pacman_packages = get_pacman_packages();
-
 struct CommandResult
 {
   bool success;
   std::string output;
 };
 
-CommandResult executeCommand(const std::string &command)
+CommandResult execute_command(const std::string &command)
 {
   std::array<char, 4096> buffer;
   CommandResult result;
 
-  std::string fullCommand = command + " 2>&1";
+  std::string full_command = command + " 2>&1";
 
-  FILE *fp = popen(fullCommand.c_str(), "r");
+  FILE *fp = popen(full_command.c_str(), "r");
   if (!fp)
   {
     result.success = false;
-    result.output = "Failed to execute command: " + fullCommand;
+    result.output = "Failed to execute command: " + full_command;
     return result;
   }
 
@@ -81,13 +79,13 @@ CommandResult executeCommand(const std::string &command)
   return result;
 }
 
-void installPacmanPackage(const std::string &package)
+void install_pacman_package(const std::string &package)
 {
-  static const std::string successText = espaceCodes::bold_green + "success" + espaceCodes::reset;
-  static const std::string failureText = espaceCodes::bold_red + "failure" + espaceCodes::reset;
+  static const std::string success_text = escape_codes::bold_green + "success" + escape_codes::reset;
+  static const std::string failure_text = escape_codes::bold_red + "failure" + escape_codes::reset;
 
   std::string command = "sudo pacman -S --noconfirm " + package;
-  CommandResult result = executeCommand(command);
+  CommandResult result = execute_command(command);
 
   if (config::verbose)
   {
@@ -99,7 +97,7 @@ void installPacmanPackage(const std::string &package)
     std::cout << "Failed to install " << package << ": " << result.output;
   }
 
-  std::cout << package << ": " << "[" << (result.success ? successText : failureText) << "]\n";
+  std::cout << package << ": " << "[" << (result.success ? success_text : failure_text) << "]\n";
 
   if (config::verbose)
   {
@@ -121,8 +119,8 @@ int main(int argc, char *argv[])
   }
 
   std::cout << "Installing AUR packages\n";
-  for (const auto &packageName : pacman_packages)
+  for (const auto &packageName : get_pacman_packages())
   {
-    installPacmanPackage(packageName);
+    install_pacman_package(packageName);
   }
 }
