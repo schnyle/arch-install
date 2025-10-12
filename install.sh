@@ -47,6 +47,29 @@ install_pacman_packages() {
 # ~~~ 4. custom installation ~~~
 
 # 4.1 create a user
+echo "Creating new wheel user"
+while true; do
+  echo "New username:"
+  read -r username
+  if [[ -z "$username" ]]; then
+    echo "Error: Username cannot be empty"
+    continue
+  fi
+  
+  if useradd -m -G wheel "$username"; then
+    break
+  else
+    echo "Error: Failed to create user '$username'. Please try a different username."
+  fi
+done
+
+while true; do
+  if passwd "$username"; then
+    break
+  fi
+done
+
+sed -i "s/^# %wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) ALL/" /etc/sudoers
 
 # 4.2 setup networking daemon
 echo "Setting up networking"
