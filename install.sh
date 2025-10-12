@@ -8,7 +8,6 @@ RESET="\e[0m"
 verbose=false
 
 # parse command line arguments
-
 for arg in "$@"; do
   case $arg in 
     -v)
@@ -17,8 +16,13 @@ for arg in "$@"; do
   esac
 done
 
-# 3.8 Boot loader
-pacman -S grub efibootmgr os-prober
+echo "~~~Installing Arch Linux~~~"
+
+# assumes steps 1., 2., 3.1, 3.2 are already completed
+
+# 3.8 boot loader
+echo "Setting up GRUB boot loader"
+pacman -S --noconfirm grub efibootmgr os-prober
 grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
 grub-mkconfig -o /boot/grub/grub.cfg
 
@@ -38,7 +42,9 @@ install_pacman_packages() {
   done
 }
 
-echo "~~~Installing Arch Linux~~~"
+# ~~~ 4. custom installation ~~~
+
+# 4.1 create a user
 
 
 packages_to_install=(
