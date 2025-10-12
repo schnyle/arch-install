@@ -1,40 +1,10 @@
-## 1. Pre-installation
+# Automated Installation Steps
 
-Complete this step manually
+> **Prerequisites:** Complete steps 1-3.2 manually following [manual-steps.md](manual-steps.md) before running the installation script.
 
-## 2. Installation
+This document outlines what the automated installation script performs, starting from step 3.3 after you've chrooted into the new system.
 
-### 2.1 Select the mirrors
-
-After connecting to the internet, _reflector_ updates the mirror list by choosing 20 most recently synchronized HTTPS mirrors and sorting them by download rate. These mirror servers are defined in `/etc/pacman.d/mirrorlist`
-
-### 2.2 Install essential packages
-
-Perform a basic install of essential packages:
-
-```bash
-pacstrap -K /mnt base linux linux-firmware
-```
-
-// vim nano
-
-## 3. Configure the system
-
-### 3.1 Fstab
-
-Generate an fstab file, defined by UUID:
-
-```bash
-genfstab -U /mnt >> /mnt/etc/fstab
-```
-
-### 3.2 Chroot
-
-Change root into the new system:
-
-```bash
-arch-chroot /mnt
-```
+## 3. Configure the system (continued)
 
 ### 3.3 Time
 
