@@ -20,6 +20,8 @@ echo "~~~Installing Arch Linux~~~"
 
 # assumes steps 1., 2., 3.1, 3.2 are already completed
 
+pacman -S --noconfirm sudo
+
 # 3.8 boot loader
 echo "Setting up GRUB boot loader"
 pacman -S --noconfirm grub efibootmgr os-prober
@@ -46,6 +48,12 @@ install_pacman_packages() {
 
 # 4.1 create a user
 
+# 4.2 setup networking daemon
+echo "Setting up networking"
+pacman -S --noconfirm networkmanager
+systemctl enable NetworkManager
+
+# 4.3 install pacman packages
 
 packages_to_install=(
   "alacritty"
@@ -54,6 +62,7 @@ packages_to_install=(
   "base-devel"
   "bbc-fake-package"
   "cmake"
+  "vim"
 )
 
 echo "Installing ${#packages_to_install[@]} pacman packages"
@@ -70,4 +79,3 @@ while true; do
   
   packages_to_install=("${failed[@]}")
 done
-

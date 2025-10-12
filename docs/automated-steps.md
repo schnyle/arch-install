@@ -74,3 +74,5 @@ grub-mkconfig -o /boot/grub/grub.cfg
 ## 4. Custom installation
 
 ### 4.1 Create a user
+
+### 4.2 Setup networking daemon
