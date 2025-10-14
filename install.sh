@@ -22,8 +22,37 @@ echo "~~~Installing Arch Linux~~~"
 
 pacman -S --noconfirm sudo
 
+# 3.3 time
+ln -sf /usr/share/zoneinfo/America/Denver /etc/localtime
+hwclock --systohc
+
+# 3.4 localization
+sed -i 's/^#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen
+locale-gen
+touch /etc/locale.conf
+echo "LANG=en_US.UTF-8" > /etc/locale.conf
+
+# 3.5 network configuration
+while true; do
+  echo "System hostname:"
+  read -r hostname
+  if echo "$hostname" > /etc/hostname; then
+    break
+  fi
+done
+
+# 3.6 initramfs
+# usually not required
+
+# 3.7 set root password
+echo "Setting password for root"
+while true; do
+  if passwd; then
+    break
+  fi
+done
+
 # 3.8 boot loader
-echo "Setting up GRUB boot loader"
 pacman -S --noconfirm grub efibootmgr os-prober
 grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
 grub-mkconfig -o /boot/grub/grub.cfg
@@ -46,15 +75,7 @@ install_pacman_packages() {
 
 # ~~~ 4. custom installation ~~~
 
-# 4.1 set root password
-echo "Setting password for root"
-while true; do
-  if passwd; then
-    break
-  fi
-done
-
-# 4.2 create a user
+# 4.1 create a user
 echo "Creating new wheel user"
 while true; do
   echo "New username:"
@@ -79,19 +100,16 @@ done
 
 sed -i "s/^# %wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) ALL/" /etc/sudoers
 
-# 4.3 setup networking daemon
-echo "Setting up networking"
+# 4.2 networking daemon
 pacman -S --noconfirm networkmanager
 systemctl enable NetworkManager
 
-# 4.4 install pacman packages
+# 4.3 install pacman packages
 
 packages_to_install=(
   "alacritty"
-  "arandr"
-  "waaah"
+  "arandr"      
   "base-devel"
-  "bbc-fake-package"
   "cmake"
   "vim"
 )
