@@ -46,7 +46,15 @@ install_pacman_packages() {
 
 # ~~~ 4. custom installation ~~~
 
-# 4.1 create a user
+# 4.1 set root password
+echo "Setting password for root"
+while true; do
+  if passwd; then
+    break
+  fi
+done
+
+# 4.2 create a user
 echo "Creating new wheel user"
 while true; do
   echo "New username:"
@@ -71,12 +79,12 @@ done
 
 sed -i "s/^# %wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) ALL/" /etc/sudoers
 
-# 4.2 setup networking daemon
+# 4.3 setup networking daemon
 echo "Setting up networking"
 pacman -S --noconfirm networkmanager
 systemctl enable NetworkManager
 
-# 4.3 install pacman packages
+# 4.4 install pacman packages
 
 packages_to_install=(
   "alacritty"
