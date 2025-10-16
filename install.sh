@@ -104,10 +104,14 @@ sed -i "s/^# %wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) ALL/" /etc/sudoers
 pacman -S --noconfirm networkmanager
 systemctl enable NetworkManager
 
-# 4.3 setup dotfiles
+# 4.3 dotfiles
 pacman -S --noconfirm git stow
 git clone https://github.com/schnyle/dotfiles.git /home/$username/.dotfiles
 bash /home/$username/.dotfiles/install.sh
+
+# 4.4 window manager & X11
+pacman -S --noconfirm xorg-server xorg-xinit xorg-apps i3
+
 
 # 4.x install pacman packages
 
