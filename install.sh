@@ -100,16 +100,20 @@ done
 
 sed -i "s/^# %wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) ALL/" /etc/sudoers
 
-# 4.2 networking daemon
+# 4.2 clone this repo
+pacman -S --noconfirm git
+sudo -u "$username" git clone https://github.com/schnyle/arch-install /tmp
+
+# 4.3 networking daemon
 pacman -S --noconfirm networkmanager
 systemctl enable NetworkManager
 
-# 4.3 dotfiles
-pacman -S --noconfirm git stow
-git clone https://github.com/schnyle/dotfiles.git /home/$username/.dotfiles
-bash /home/$username/.dotfiles/install.sh
+# 4.4 dotfiles
+pacman -S --noconfirm stow
+sudo -u "$username" git clone https://github.com/schnyle/dotfiles.git /home/$username/.dotfiles
+sudo -u "$username" bash /home/$username/.dotfiles/install.sh
 
-# 4.4 window manager & X11
+# 4.5 window manager & X11
 pacman -S --noconfirm xorg-server xorg-xinit xorg-apps i3
 
 
