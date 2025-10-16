@@ -1,7 +1,6 @@
 #!/bin/bash
 
 # configuration
-pacman_packages_filename="packages_test"
 GREEN="\e[32m"
 RED="\e[31m"
 RESET="\e[0m"
@@ -102,7 +101,7 @@ sed -i "s/^# %wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) ALL/" /etc/sudoers
 
 # 4.2 clone this repo
 pacman -S --noconfirm git
-sudo -u "$username" git clone https://github.com/schnyle/arch-install /tmp
+sudo -u "$username" git clone https://github.com/schnyle/arch-install /tmp/arch-install/
 
 # 4.3 networking daemon
 pacman -S --noconfirm networkmanager
@@ -113,18 +112,43 @@ pacman -S --noconfirm stow
 sudo -u "$username" git clone https://github.com/schnyle/dotfiles.git /home/$username/.dotfiles
 sudo -u "$username" bash /home/$username/.dotfiles/install.sh
 
-# 4.5 window manager & X11
-pacman -S --noconfirm xorg-server xorg-xinit xorg-apps i3
+# 4.5 graphics/ui 
 
+# need to update this section to handle non-NVIDIA systems
+
+# 4.5.1 X11
+pacman -S --noconfirm xorg-server xorg-xinit xorg-apps
+
+# 4.5.2 window manager, fonts, compositor 
+pacman -S --noconfirm i3
+mkdir /usr/share/fonts
+cp /tmp/arch-install/fonts/*.ttf /usr/share/fonts/
+fc-cache -fv
+if systemd-detect-virt -q; then
+  echo "VM detected, skipping compositor"
+else
+  pacman -S --noconfirm picom
+fi
+
+# 4.5.3 display configuration
+pacman -S --noconfirm arandr
+ln -sf /usr/bin/arandr /usr/local/bin/displays
+
+# 4.5.4 NVIDIA drivers (optional)
+echo "Install NVIDIA drivers? (y/n)"
+read -r install_nvidia
+if [[ $install_nvidia == "y" ]]; then
+  pacman -S --noconfirm nvidia nvidia-utils nvidia-settings
+fi
 
 # 4.x install pacman packages
 
 packages_to_install=(
-  "alacritty"
-  "arandr"      
+  "alacritty"  
   "base-devel"
   "cmake"
   "vim"
+  "man-db"
 )
 
 echo "Installing ${#packages_to_install[@]} pacman packages"
