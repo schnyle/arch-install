@@ -104,7 +104,12 @@ sed -i "s/^# %wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) ALL/" /etc/sudoers
 pacman -S --noconfirm networkmanager
 systemctl enable NetworkManager
 
-# 4.3 install pacman packages
+# 4.3 setup dotfiles
+pacman -S --noconfirm git stow
+git clone https://github.com/schnyle/dotfiles.git /home/$username/.dotfiles
+bash /home/$username/.dotfiles/install.sh
+
+# 4.x install pacman packages
 
 packages_to_install=(
   "alacritty"

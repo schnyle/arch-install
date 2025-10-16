@@ -11,7 +11,6 @@ curl -fsSL https://raw.githubusercontent.com/schnyle/arch-install/main/install.s
   tee install.sh | \
   sha256sum -c <(curl -fsSL https://raw.githubusercontent.com/schnyle/arch-install/main/install.sh.sha256) && \
   bash install.sh
-
 ```
 
 ## Options

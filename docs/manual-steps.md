@@ -77,6 +77,15 @@ genfstab -U /mnt >> /mnt/etc/fstab
 arch-chroot /mnt
 ```
 
+## 7. Download, verify, and run the automatic installation
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/schnyle/arch-install/main/install.sh | \
+  tee install.sh | \
+  sha256sum -c <(curl -fsSL https://raw.githubusercontent.com/schnyle/arch-install/main/install.sh.sha256) && \
+  bash install.sh
+```
+
 ## Dual-Boot Notes
 
 **For dual-boot installations:**
