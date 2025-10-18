@@ -94,13 +94,18 @@ done
 
 sed -i "s/^# %wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) ALL/" /etc/sudoers
 
-# 4.1.2 setup oh-my-zsh
+# 4.1.2 oh-my-zsh
 
 pacman -S --noconfirm zsh
 sudo -u "$username" bash -c "curl -L https://install.ohmyz.sh | sh"
 sudo -u "$username" chsh -s /usr/bin/zsh
 
-# 4.1.3 collect user preferences
+# 4.1.3 enable pulse audio
+mkdir -p /home/$username/.config/systemd/user/default.target.wants
+ln -sf /usr/lib/systemd/user/pulseaudio.service /home/$username/.config/systemd/user/default.target.wants/
+chown -R $username:$username /home/$username/.config
+
+# 4.1.4 collect user preferences
 echo "Install NVIDIA drivers? (y/n)"
 read -r install_nvidia
 
@@ -141,6 +146,9 @@ packages_to_install=(
   "cmake"
   "vim"
   "man-db"
+  "pulseaudio"
+  "pavucontrol"
+  "alsa-utils"
 )
 
 echo "Installing ${#packages_to_install[@]} pacman packages"
@@ -162,3 +170,6 @@ done
 pacman -S --noconfirm stow
 sudo -u "$username" git clone https://github.com/schnyle/dotfiles.git /home/$username/.dotfiles
 sudo -u "$username" bash /home/$username/.dotfiles/install.sh
+
+# 4.6 symlinks
+ln -sf /usr/bin/pavucontrol /usr/local/bin/audio
