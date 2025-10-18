@@ -33,4 +33,4 @@ pacstrap /mnt base linux linux-firmware
 
 genfstab -U /mnt >> /mnt/etc/fstab
 
-echo "Pre-installation complete. Run `arch-chroot /mnt` and proceed with installation."
+echo "Pre-installation complete. Run 'arch-chroot /mnt' and proceed with installation."

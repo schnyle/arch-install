@@ -74,7 +74,9 @@ install_pacman_packages() {
 
 # ~~~ 4. custom installation ~~~
 
-# 4.1 create a user
+# 4.1 user setup
+
+# 4.1.1 create new user
 echo "Creating new wheel user"
 while true; do
   echo "New username:"
@@ -99,6 +101,12 @@ done
 
 sed -i "s/^# %wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) ALL/" /etc/sudoers
 
+# 4.1.2 setup oh-my-zsh
+
+pacman -S --noconfirm zsh
+sudo -u "$username" bash -c "curl -L https://install.ohmyz.sh | sh"
+sudo -u "$username" chsh -s /usr/bin/zsh
+
 # 4.2 clone this repo
 pacman -S --noconfirm git
 sudo -u "$username" git clone https://github.com/schnyle/arch-install /tmp/arch-install/
@@ -107,19 +115,14 @@ sudo -u "$username" git clone https://github.com/schnyle/arch-install /tmp/arch-
 pacman -S --noconfirm networkmanager
 systemctl enable NetworkManager
 
-# 4.4 dotfiles
-pacman -S --noconfirm stow
-sudo -u "$username" git clone https://github.com/schnyle/dotfiles.git /home/$username/.dotfiles
-sudo -u "$username" bash /home/$username/.dotfiles/install.sh
-
-# 4.5 graphics/ui 
+# 4.4 graphics/ui 
 
 # need to update this section to handle non-NVIDIA systems
 
-# 4.5.1 X11
+# 4.4.1 X11
 pacman -S --noconfirm xorg-server xorg-xinit xorg-apps
 
-# 4.5.2 window manager, fonts, compositor 
+# 4.4.2 window manager, fonts, compositor 
 pacman -S --noconfirm i3
 mkdir /usr/share/fonts
 cp /tmp/arch-install/fonts/*.ttf /usr/share/fonts/
@@ -130,18 +133,18 @@ else
   pacman -S --noconfirm picom
 fi
 
-# 4.5.3 display configuration
+# 4.4.3 display configuration
 pacman -S --noconfirm arandr
 ln -sf /usr/bin/arandr /usr/local/bin/displays
 
-# 4.5.4 NVIDIA drivers (optional)
+# 4.4.4 NVIDIA drivers (optional)
 echo "Install NVIDIA drivers? (y/n)"
 read -r install_nvidia
 if [[ $install_nvidia == "y" ]]; then
   pacman -S --noconfirm nvidia nvidia-utils nvidia-settings
 fi
 
-# 4.x install pacman packages
+# 4.5 install pacman packages
 
 packages_to_install=(
   "alacritty"  
@@ -165,3 +168,8 @@ while true; do
   
   packages_to_install=("${failed[@]}")
 done
+
+# 4.6 dotfiles
+pacman -S --noconfirm stow
+sudo -u "$username" git clone https://github.com/schnyle/dotfiles.git /home/$username/.dotfiles
+sudo -u "$username" bash /home/$username/.dotfiles/install.sh
