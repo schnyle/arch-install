@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# log output
+exec > >(tee /var/log/arch-install.log) 2>&1
+
 GREEN="\e[32m"
 RED="\e[31m"
 RESET="\e[0m"
@@ -7,6 +10,9 @@ RESET="\e[0m"
 echo "~~~Installing Arch Linux~~~"
 
 # assumes steps 1., 2., 3.1, 3.2 are already completed
+
+#sync package database after chroot
+pacman -Sy
 
 pacman -S --noconfirm sudo
 
