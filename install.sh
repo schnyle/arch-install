@@ -24,13 +24,13 @@ hwclock --systohc
 sed -i 's/^#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen
 locale-gen
 touch /etc/locale.conf
-echo "LANG=en_US.UTF-8" > /etc/locale.conf
+echo "LANG=en_US.UTF-8" >/etc/locale.conf
 
 # 3.5 network configuration
 while true; do
   echo "System hostname:"
   read -r hostname
-  if echo "$hostname" > /etc/hostname; then
+  if echo "$hostname" >/etc/hostname; then
     break
   fi
 done
@@ -56,12 +56,12 @@ install_pacman_packages() {
   for package in "$@"; do
     if output=$(sudo pacman -S --noconfirm "$package" 2>&1); then
       echo -e "$package: [${GREEN}success${RESET}]"
-        echo "$output"
+      echo "$output"
     else
       echo -e "$package: [${RED}failed${RESET}]"
       echo "$output"
       failed+=("$package")
-    fi      
+    fi
   done
 }
 
@@ -78,7 +78,7 @@ while true; do
     echo "Error: Username cannot be empty"
     continue
   fi
-  
+
   if useradd -m -G wheel "$username"; then
     break
   else
@@ -108,12 +108,12 @@ read -r install_nvidia
 pacman -S --noconfirm networkmanager
 systemctl enable NetworkManager
 
-# 4.3 graphics/ui 
+# 4.3 graphics/ui
 
 # 4.3.1 X11
 pacman -S --noconfirm xorg-server xorg-xinit xorg-apps
 
-# 4.3.2 window manager, fonts, compositor 
+# 4.3.2 window manager, fonts, compositor
 pacman -S --noconfirm i3
 mkdir /usr/share/fonts
 cp /tmp/arch-install/fonts/*.ttf /usr/share/fonts/
@@ -136,7 +136,7 @@ fi
 # 4.4 install pacman packages
 
 packages_to_install=(
-  "alacritty"  
+  "alacritty"
   "base-devel"
   "cmake"
   "vim"
@@ -144,7 +144,7 @@ packages_to_install=(
 )
 
 echo "Installing ${#packages_to_install[@]} pacman packages"
-while true; do 
+while true; do
   install_pacman_packages "${packages_to_install[@]}"
 
   [ ${#failed[@]} -eq 0 ] && break
@@ -154,7 +154,7 @@ while true; do
   echo "Retry? (y/n)"
   read -r retry
   [[ $retry != "y" ]] && break
-  
+
   packages_to_install=("${failed[@]}")
 done
 
