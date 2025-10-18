@@ -13,10 +13,6 @@ curl -fsSL https://raw.githubusercontent.com/schnyle/arch-install/main/install.s
   bash install.sh
 ```
 
-## Options
-
-- `-v, --verbose` - Show verbose output
-
 ## Setup
 
 After cloning this repo, setup the pre commit hooks with:

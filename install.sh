@@ -1,19 +1,8 @@
 #!/bin/bash
 
-# configuration
 GREEN="\e[32m"
 RED="\e[31m"
 RESET="\e[0m"
-verbose=false
-
-# parse command line arguments
-for arg in "$@"; do
-  case $arg in 
-    -v)
-      verbose=true
-      ;;
-  esac
-done
 
 echo "~~~Installing Arch Linux~~~"
 
@@ -61,9 +50,7 @@ install_pacman_packages() {
   for package in "$@"; do
     if output=$(sudo pacman -S --noconfirm "$package" 2>&1); then
       echo -e "$package: [${GREEN}success${RESET}]"
-      if [[ $verbose == true ]]; then
         echo "$output"
-      fi
     else
       echo -e "$package: [${RED}failed${RESET}]"
       echo "$output"
@@ -107,6 +94,10 @@ pacman -S --noconfirm zsh
 sudo -u "$username" bash -c "curl -L https://install.ohmyz.sh | sh"
 sudo -u "$username" chsh -s /usr/bin/zsh
 
+# 4.1.3 collect user preferences
+echo "Install NVIDIA drivers? (y/n)"
+read -r install_nvidia
+
 # 4.2 clone this repo
 pacman -S --noconfirm git
 sudo -u "$username" git clone https://github.com/schnyle/arch-install /tmp/arch-install/
@@ -137,9 +128,7 @@ fi
 pacman -S --noconfirm arandr
 ln -sf /usr/bin/arandr /usr/local/bin/displays
 
-# 4.4.4 NVIDIA drivers (optional)
-echo "Install NVIDIA drivers? (y/n)"
-read -r install_nvidia
+# 4.4.4 NVIDIA drivers
 if [[ $install_nvidia == "y" ]]; then
   pacman -S --noconfirm nvidia nvidia-utils nvidia-settings
 fi
