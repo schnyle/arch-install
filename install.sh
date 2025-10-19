@@ -94,7 +94,14 @@ mkdir -p /home/$username/.config/systemd/user/default.target.wants
 ln -sf /usr/lib/systemd/user/pulseaudio.service /home/$username/.config/systemd/user/default.target.wants/
 chown -R $username:$username /home/$username/.config
 
-# 4.1.4 collect user preferences
+# 4.1.4 install Arch User Repository helper
+log "installing yay"
+pacman_batch "git" "base-devel"
+git clone https://aur.archlinux.org/yay.git /opt/yay
+chown -R $username:$username /opt/yay
+sudo -u "$username" makepkg -si -D /opt/yay --noconfirm
+
+# 4.1.5 collect user preferences
 echo "Install NVIDIA drivers? (y/n)"
 read -r install_nvidia
 
