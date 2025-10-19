@@ -3,11 +3,15 @@
 # log output
 exec > >(tee /var/log/arch-install.log) 2>&1
 
+log() {
+  echo "[ARCH-INSTALL] $*"
+}
+
 GREEN="\e[32m"
 RED="\e[31m"
 RESET="\e[0m"
 
-echo "~~~Installing Arch Linux~~~"
+log "starting Arch Linux install"
 
 # assumes steps 1., 2., 3.1, 3.2 are already completed
 
@@ -39,7 +43,7 @@ done
 # usually not required
 
 # 3.7 set root password
-echo "Setting password for root"
+log "Setting password for root"
 while true; do
   if passwd; then
     break
@@ -70,19 +74,19 @@ install_pacman_packages() {
 # 4.1 user setup
 
 # 4.1.1 create new user
-echo "Creating new wheel user"
+log "Creating new wheel user"
 while true; do
   echo "New username:"
   read -r username
   if [[ -z "$username" ]]; then
-    echo "Error: Username cannot be empty"
+    log "Error: Username cannot be empty"
     continue
   fi
 
   if useradd -m -G wheel "$username"; then
     break
   else
-    echo "Error: Failed to create user '$username'. Please try a different username."
+    log "Error: Failed to create user '$username'. Please try a different username."
   fi
 done
 
@@ -124,7 +128,7 @@ mkdir /usr/share/fonts
 cp /tmp/arch-install/fonts/*.ttf /usr/share/fonts/
 fc-cache -fv
 if systemd-detect-virt -q; then
-  echo "VM detected, skipping compositor"
+  log "VM detected, skipping compositor"
 else
   pacman -S --noconfirm picom
 fi
@@ -151,7 +155,7 @@ packages_to_install=(
   "alsa-utils"
 )
 
-echo "Installing ${#packages_to_install[@]} pacman packages"
+log "Installing ${#packages_to_install[@]} pacman packages"
 while true; do
   install_pacman_packages "${packages_to_install[@]}"
 
