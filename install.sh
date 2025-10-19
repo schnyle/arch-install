@@ -1,15 +1,14 @@
 #!/bin/bash
 
+ARCH_INSTALL_DIR="$(dirname "$(realpath "$0")")"
+source "$ARCH_INSTALL_DIR/pacman_install.sh"
+
 # log output
 exec > >(tee /var/log/arch-install.log) 2>&1
 
 log() {
   echo "[ARCH-INSTALL] $*"
 }
-
-GREEN="\e[32m"
-RED="\e[31m"
-RESET="\e[0m"
 
 log "starting Arch Linux install"
 
@@ -54,20 +53,6 @@ done
 pacman -S --noconfirm grub efibootmgr os-prober
 grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
 grub-mkconfig -o /boot/grub/grub.cfg
-
-install_pacman_packages() {
-  failed=()
-  for package in "$@"; do
-    if output=$(sudo pacman -S --noconfirm "$package" 2>&1); then
-      echo -e "$package: [${GREEN}success${RESET}]"
-      echo "$output"
-    else
-      echo -e "$package: [${RED}failed${RESET}]"
-      echo "$output"
-      failed+=("$package")
-    fi
-  done
-}
 
 # ~~~ 4. custom installation ~~~
 
@@ -156,19 +141,7 @@ packages_to_install=(
 )
 
 log "Installing ${#packages_to_install[@]} pacman packages"
-while true; do
-  install_pacman_packages "${packages_to_install[@]}"
-
-  [ ${#failed[@]} -eq 0 ] && break
-
-  echo ""
-  echo "Failed pacman packages: ${failed[*]}"
-  echo "Retry? (y/n)"
-  read -r retry
-  [[ $retry != "y" ]] && break
-
-  packages_to_install=("${failed[@]}")
-done
+pacman_batch "${packages_to_install[@]}"
 
 # 4.5 dotfiles
 pacman -S --noconfirm stow
