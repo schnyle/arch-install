@@ -150,3 +150,18 @@ sudo -u "$username" bash /home/$username/.dotfiles/install.sh
 
 # 4.6 symlinks
 ln -sf /usr/bin/pavucontrol /usr/local/bin/audio
+
+# 4.7 third-party software
+
+log "installing third-party software"
+
+# 4.7.1 minesweeper
+log "installing minesweeper"
+mkdir -p /opt/minesweeper
+if curl -fL https://github.com/schnyle/minesweeper/releases/latest/download/minesweeper -o /opt/minesweeper/minesweeper; then
+  chmod +x /opt/minesweeper/minesweeper
+  ln -sf /opt/minesweeper/minesweeper /usr/local/bin/minesweeper
+else
+  log "failed to download minesweeper"
+  rm -rf /opt/minesweeper
+fi

@@ -31,6 +31,9 @@ mount --mkdir /dev/vda1 /mnt/boot
 
 pacstrap /mnt base linux linux-firmware
 
+arch-chroot /mnt pacman-key --init
+arch-chroot /mnt pacman-key --populate archlinux
+
 genfstab -U /mnt >> /mnt/etc/fstab
 
 echo "Pre-installation complete. Run 'arch-chroot /mnt' and proceed with installation."
