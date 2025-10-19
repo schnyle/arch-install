@@ -11,7 +11,7 @@ pacman_batch() {
   log "installing ${#packages[@]} pacman packages: $*"
 
   failed_packages=()
-  if sudo pacman -S --noconfirm "$@"; then
+  if pacman -S --noconfirm "$@"; then
     log "successfully installed ${#packages[@]} pacman packages"
     return 0
   else
@@ -38,7 +38,7 @@ pacman_single() {
   while true; do
     attempt=$((attempt + 1))
 
-    if sudo pacman -S --noconfirm "$package"; then
+    if pacman -S --noconfirm "$package"; then
       log "successfully installed pacman package $package"
       return 0
     fi
