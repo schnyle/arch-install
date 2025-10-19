@@ -100,26 +100,21 @@ read -r install_nvidia
 
 # 4.2 first-party software
 
-packages_to_install=(
-  "alacritty"
-  "base-devel"
-  "cmake"
-  "vim"
-  "man-db"
-  "pulseaudio"
-  "pavucontrol"
-  "alsa-utils"
-  "networkmanager"
-  "xorg-server"
-  "xorg-xinit"
-  "xorg-apps"
-  "i3"
-  "arandr"
-  "stow"
-)
+ARCH_INSTALL_DIR="$(dirname "$(realpath "$0")")"
+PACMAN_PACKAGES_FILE_PATH="$ARCH_INSTALL_DIR/pacman-packages"
 
-log "Installing ${#packages_to_install[@]} pacman packages"
-pacman_batch "${packages_to_install[@]}"
+packages=()
+while IFS= read -r line; do
+  line="${line%%#*}"
+  line=$(echo "$line" | xargs)
+
+  [[ -z "$line" ]] && continue
+
+  packages+=("$line")
+done <"$PACMAN_PACKAGES_FILE_PATH"
+
+log "Installing ${#packages[@]} pacman packages"
+pacman_batch "${packages[@]}"
 
 # 4.3 networking daemon
 systemctl enable NetworkManager
