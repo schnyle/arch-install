@@ -14,7 +14,10 @@ log "starting Arch Linux install"
 
 # assumes steps 1., 2., 3.1, 3.2 are already completed
 
-#sync package database after chroot
+# enable multilib repository for 32-bit packages
+sed -i '/^#\[multilib\]/,/^#Include/ {s/^#//; }' /etc/pacman.conf
+
+# sync package database after chroot
 pacman -Sy
 
 pacman_single "sudo"
@@ -102,8 +105,42 @@ chown -R $username:$username /opt/yay
 sudo -u "$username" makepkg -si -D /opt/yay --noconfirm
 
 # 4.1.5 collect user preferences
-echo "Install NVIDIA drivers? (y/n)"
-read -r install_nvidia
+install_package_prompt() {
+  echo "Install $@? (y/n)"
+  read -r user_input
+  if [[ $user_input == "y" ]]; then
+    log "user chose to install $@"
+    return 0
+  else
+    log "user chose to not install $@"
+    return 1
+  fi
+}
+
+echo "Install all optional software? (y/n)"
+read -r install_all
+
+install_minesweeper="y"
+install_nvidia="y"
+install_steam="y"
+
+if [[ $install_all == "y" ]]; then
+  log "user chose to install all optional software"
+else
+  log "user chose to not install all optional software"
+
+  if ! install_package_prompt "Minesweeper"; then
+    install_minesweeper="n"
+  fi
+
+  if ! install_package_prompt "NVIDIA drivers"; then
+    install_nvidia="n"
+  fi
+
+  if ! install_package_prompt "Steam"; then
+    install_steam="n"
+  fi
+fi
 
 # 4.2 first-party software
 
@@ -160,12 +197,21 @@ ln -sf /usr/bin/pavucontrol /usr/local/bin/audio
 log "installing third-party software"
 
 # 4.7.1 minesweeper
-log "installing minesweeper"
-mkdir -p /opt/minesweeper
-if curl -fL https://github.com/schnyle/minesweeper/releases/latest/download/minesweeper -o /opt/minesweeper/minesweeper; then
-  chmod +x /opt/minesweeper/minesweeper
-  ln -sf /opt/minesweeper/minesweeper /usr/local/bin/minesweeper
-else
-  log "failed to download minesweeper"
-  rm -rf /opt/minesweeper
+if [[ $install_minesweeper == "y" ]]; then
+  log "installing minesweeper"
+  mkdir -p /opt/minesweeper
+  if curl -fL https://github.com/schnyle/minesweeper/releases/latest/download/minesweeper -o /opt/minesweeper/minesweeper; then
+    chmod +x /opt/minesweeper/minesweeper
+    ln -sf /opt/minesweeper/minesweeper /usr/local/bin/minesweeper
+  else
+    log "failed to download minesweeper"
+    rm -rf /opt/minesweeper
+  fi
+fi
+
+# 4.7.2 steam
+if [[ $install_steam == "y" ]]; then
+  log "installing Steam"
+  log "WARNING: install lib32-nvidia-utils - assumes NVIDIA GPU"
+  pacman_batch "steam" "lib32-nvidia-utils"
 fi
