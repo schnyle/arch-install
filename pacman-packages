@@ -7,10 +7,12 @@ i3-wm           # improved dynamic tiling window manager
 i3blocks        # define blocks for your i3bar status line
 i3lock          # improved screenlocker based upon XCB and PAM
 i3status        # generates status bar to use with i3bar, dzen2 or xmobar
+less            # a terminal based program for viewing text files
 man-db          # a utility for reading man pages
 networkmanager  # network connection manager and user application
 pavucontrol     # PulseAudio volume control
 pulseaudio      # a featureful, general-purpose sound server
+qutebrowser     # a keyboard-driven, vim-like browser base on Python and Qt
 stow            # manage installation of multiple softwares in the same directory tree
 tmux            # terminal multiplexer
 vim             # Vi Improved, a highly configurable, improved version of the vi text editor

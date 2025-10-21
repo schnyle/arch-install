@@ -1,10 +1,9 @@
 #!/bin/bash
 
-DEFAULT_ATTEMPTS=3
+ARCH_INSTALL_DIR="$(dirname "$(realpath "$0")")"
+source "$ARCH_INSTALL_DIR/scripts/log.sh"
 
-log() {
-  echo "[ARCH-INSTALL] $*"
-}
+DEFAULT_ATTEMPTS=3
 
 pacman_batch() {
   packages="$@"
