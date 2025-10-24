@@ -21,7 +21,7 @@ while true; do
   if useradd -m -G wheel "$username"; then
     break
   else
-    log "Error: Failed to create user '$username'. Please try a different username."
+    log "Error: Failed to create user '$username'. User may already exist or invalid characters used."
   fi
 done
 
@@ -31,6 +31,7 @@ while true; do
   fi
 done
 
+# enable wheel group sudo access for new user
 sed -i "s/^# %wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) ALL/" /etc/sudoers
 
 # 4.1.2 oh-my-zsh
@@ -70,6 +71,7 @@ read -r install_all
 install_minesweeper="y"
 install_nvidia="y"
 install_steam="y"
+install_vscode="y"
 
 if [[ $install_all == "y" ]]; then
   log "user chose to install all optional software"
@@ -86,6 +88,10 @@ else
 
   if ! install_package_prompt "Steam"; then
     install_steam="n"
+  fi
+
+  if ! install_package_prompt "VS Code"; then
+    install_vscode="n"
   fi
 fi
 
@@ -161,4 +167,17 @@ if [[ $install_steam == "y" ]]; then
   log "installing Steam"
   log "WARNING: install lib32-nvidia-utils - assumes NVIDIA GPU"
   pacman_batch "steam" "lib32-nvidia-utils"
+fi
+
+# 4.7.3 VS Code
+if [[ $install_vscode == "y" ]]; then
+  log "installing VS Code"
+  sudo -u "$username" yay -S --noconfirm visual-studio-code-bin
+
+  log "installing VS Code extensions"
+  sudo -u "$username" code --install-extension ms-vscode.cmake-tools
+  sudo -u "$username" code --install-extension ms-vscode.cpptools
+  sudo -u "$username" code --install-extension vscode-icons-team.vscode-icons
+  sudo -u "$username" code --install-extension tomoki1207.pdf
+  sudo -u "$username" code --install-extension mechatroner.rainbow-csv
 fi
