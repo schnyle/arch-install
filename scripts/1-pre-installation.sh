@@ -37,18 +37,3 @@ mkfs.ext4 /dev/vda3
 # 1.11 Mount the file systems
 mount /dev/vda3 /mnt
 mount --mkdir /dev/vda1 /mnt/boot
-
-# 2.1 Select the mirrors
-
-# 2.2 Install essential packages
-pacstrap /mnt base linux linux-firmware
-
-# rest will be moved to main install.sh scripts
-arch-chroot /mnt pacman-key --init
-arch-chroot /mnt pacman-key --populate archlinux
-
-# 3.1 Fstab
-genfstab -U /mnt >>/mnt/etc/fstab
-
-echo "Pre-installation complete. Run 'arch-chroot /mnt' and proceed with installation."
-
