@@ -5,6 +5,9 @@ source "$SCRIPTS_DIR/helpers/log.sh"
 source "$SCRIPTS_DIR/helpers/pacman-install.sh"
 
 # ~~~ 4. custom installation ~~~
+#
+# enable multilib repository for 32-bit packages
+sed -i '/^#\[multilib\]/,/^#Include/ {s/^#//; }' /etc/pacman.conf
 
 # 4.1 user setup
 
