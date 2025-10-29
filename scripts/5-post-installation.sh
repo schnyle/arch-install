@@ -56,9 +56,16 @@ chown -R $username:$username /home/$username/.config
 # 4.1.4 install Arch User Repository helper
 log "installing yay"
 pacman_batch "base-devel"
-git clone https://aur.archlinux.org/yay.git /opt/yay
+if ! git clone https://aur.archlinux.org/yay.git /opt/yay; then
+  log "error: failed to clone yay repository"
+  exit 1
+fi
+
 chown -R $username:$username /opt/yay
-sudo -u "$username" makepkg -si -D /opt/yay --noconfirm
+if ! sudo -u "$username" makepkg -si -D /opt/yay --noconfirm; then
+  log "error: failed to build yay"
+  exit 1
+fi
 
 # 4.1.5 collect user preferences
 install_package_prompt() {
@@ -144,8 +151,11 @@ if [[ $install_nvidia == "y" ]]; then
 fi
 
 # 4.4 dotfiles
-sudo -u "$username" git clone https://github.com/schnyle/dotfiles.git /home/$username/.dotfiles
-sudo -u "$username" bash /home/$username/.dotfiles/install.sh
+if sudo -u "$username" git clone https://github.com/schnyle/dotfiles.git /home/$username/.dotfiles; then
+  sudo -u "$username" bash /home/$username/.dotfiles/install.sh
+else
+  log "warning: failed to clone dotfiles repository"
+fi 
 
 # 4.5 symlinks
 ln -sf /usr/bin/pavucontrol /usr/local/bin/audio
