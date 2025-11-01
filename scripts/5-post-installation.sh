@@ -44,7 +44,7 @@ sed -i "s/^# %wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) ALL/" /etc/sudoers
 
 # 4.1.2 oh-my-zsh
 
-pacman_batch "git" "zsh"
+pacmansync git zsh
 sudo -u "$username" bash -c "curl -L https://install.ohmyz.sh | sh"
 sudo -u "$username" chsh -s /usr/bin/zsh
 
@@ -55,7 +55,7 @@ chown -R $username:$username /home/$username/.config
 
 # 4.1.4 install Arch User Repository helper
 log "installing yay"
-pacman_batch "base-devel"
+pacmansync base-devel
 if ! git clone https://aur.archlinux.org/yay.git /opt/yay; then
   log "error: failed to clone yay repository"
   exit 1
@@ -126,7 +126,7 @@ while IFS= read -r line; do
 done <"$PACMAN_PACKAGES_FILE_PATH"
 
 log "Installing ${#packages[@]} pacman packages"
-pacman_batch "${packages[@]}"
+pacmansync "${packages[@]}"
 
 # 4.3 graphics/ui
 
@@ -139,7 +139,7 @@ fc-cache -fv
 if systemd-detect-virt -q; then
   log "VM detected, skipping compositor"
 else
-  pacman_single "picom"
+  pacmansync picom
 fi
 
 # 4.3.3 display configuration
@@ -147,7 +147,7 @@ ln -sf /usr/bin/arandr /usr/local/bin/displays
 
 # 4.3.4 NVIDIA drivers
 if [[ $install_nvidia == "y" ]]; then
-  pacman_batch "nvidia" "nvidia-utils" "nvidia-settings"
+  pacmansync nvidia nvidia-utils nvidia-settings
 fi
 
 # 4.4 dotfiles
@@ -155,7 +155,7 @@ if sudo -u "$username" git clone https://github.com/schnyle/dotfiles.git /home/$
   sudo -u "$username" bash /home/$username/.dotfiles/install.sh
 else
   log "warning: failed to clone dotfiles repository"
-fi 
+fi
 
 # 4.5 symlinks
 ln -sf /usr/bin/pavucontrol /usr/local/bin/audio
@@ -181,7 +181,7 @@ fi
 if [[ $install_steam == "y" ]]; then
   log "installing Steam"
   log "WARNING: install lib32-nvidia-utils - assumes NVIDIA GPU"
-  pacman_batch "steam" "lib32-nvidia-utils"
+  pacmansync steam lib32-nvidia-utils
 fi
 
 # 4.6.3 VS Code

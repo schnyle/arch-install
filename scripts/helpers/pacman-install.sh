@@ -5,9 +5,9 @@ source "$ARCH_INSTALL_DIR/scripts/log.sh"
 
 DEFAULT_ATTEMPTS=3
 
-pacman_batch() {
+pacmansync() {
   if [[ $# -eq 0 ]]; then
-    log "pacman_batch() called but no packages given"
+    log "pacmansync() called but no packages given"
     return 0
   fi
 
