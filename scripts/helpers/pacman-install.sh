@@ -1,25 +1,24 @@
 #!/bin/bash
 
-ARCH_INSTALL_DIR="$(dirname "$(realpath "$0")")"
-source "$ARCH_INSTALL_DIR/scripts/log.sh"
+HELPERS_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+source "$HELPERS_DIR/log.sh"
 
 DEFAULT_ATTEMPTS=3
 
 pacmansync() {
   if [[ $# -eq 0 ]]; then
-    log "pacmansync() called but no packages given"
+    logwarn "pacmansync() called but no packages given"
     return 0
   fi
 
-  packages="$@"
-  log "installing ${#packages[@]} pacman packages: $*"
+  loginfo "installing $# pacman packages: $*"
 
   failed_packages=()
   if pacman -S --noconfirm "$@"; then
-    log "successfully installed ${#packages[@]} pacman packages"
+    loginfo "successfully installed $# pacman packages"
     return 0
   else
-    log "batch pacman install failed, installing individually"
+    logwarn "batch pacman install failed, installing individually"
     for package in "$@"; do
       if ! pacman_single "$package"; then
         failed_packages+=("$package")
@@ -28,39 +27,39 @@ pacmansync() {
   fi
 
   if [[ ${#failed_packages[@]} -gt 0 ]]; then
-    log "Failed to install ${#failed_packages[@]} packages: ${failed_packages[*]}"
+    logerr "failed to install ${#failed_packages[@]} packages: ${failed_packages[*]}"
   fi
 
   return ${#failed_packages[@]}
 }
 
 pacman_single() {
-  package="$@"
-  log "installing single pacman package $package"
+  package="$1"
+  loginfo "installing single pacman package $package"
 
   attempt=0
   while true; do
     attempt=$((attempt + 1))
 
     if pacman -S --noconfirm "$package"; then
-      log "successfully installed pacman package $package"
+      loginfo "successfully installed pacman package $package"
       return 0
     fi
 
-    log "failed to install pacman package $package"
+    logerr "failed to install pacman package $package"
 
     if ((attempt < DEFAULT_ATTEMPTS)); then
-      log "retrying installation of pacman package $package (attempt $((attempt + 1))/$DEFAULT_ATTEMPTS)"
+      loginfo "retrying installation of pacman package $package (attempt $((attempt + 1))/$DEFAULT_ATTEMPTS)"
       continue
     fi
 
-    echo "Failed to install $package ($attempt attempts). Try again? (y/n)"
+    prompt "Failed to install $package ($attempt attempts). Try again? (y/n)"
     read -r retry
     if [[ $retry == "y" ]]; then
-      log "user chose to retry installation of pacman package $package (attempt $attempt)"
+      loginfo "user chose to retry installation of pacman package $package (attempt $attempt)"
       continue
     else
-      log "user chose to skip installation of pacman package $package"
+      loginfo "user chose to skip installation of pacman package $package"
       return 1
     fi
   done

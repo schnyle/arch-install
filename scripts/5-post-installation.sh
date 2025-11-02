@@ -1,35 +1,37 @@
 #!/bin/bash
 
+# 5. Post-installation
+
 SCRIPTS_DIR="$(dirname "$(realpath "$0")")"
 source "$SCRIPTS_DIR/helpers/log.sh"
 source "$SCRIPTS_DIR/helpers/pacman-install.sh"
 
-# ~~~ 4. custom installation ~~~
+loginfo "starting 5. post-installation"
 
 pacman -Sy
 
-# enable multilib repository for 32-bit packages
+loginfo "enabling multilib repository for 32-bit packages"
 sed -i '/^#\[multilib\]/,/^#Include/ {s/^#//; }' /etc/pacman.conf
 
-# start networkmanager
+loginfo "starting networkmanager daemon"
 systemctl start NetworkManager
 
-# 4.1 user setup
+# 5.1 user setup
 
-# 4.1.1 create new user
-log "Creating new wheel user"
+# 5.1.1 create new user
+loginfo "Creating new wheel user"
 while true; do
-  echo "New username:"
+  prompt "New username:"
   read -r username
   if [[ -z "$username" ]]; then
-    log "Error: Username cannot be empty"
+    logerr "username cannot be empty"
     continue
   fi
 
   if useradd -m -G wheel "$username"; then
     break
   else
-    log "Error: Failed to create user '$username'. User may already exist or invalid characters used."
+    logerr "failed to create user '$username'. user may already exist or invalid characters used."
   fi
 done
 
@@ -39,48 +41,49 @@ while true; do
   fi
 done
 
-# enable wheel group sudo access for new user
 sed -i "s/^# %wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) ALL/" /etc/sudoers
 
-# 4.1.2 oh-my-zsh
-
+# 5.1.2 oh-my-zsh
+loginfo "installing oh-my-zsh"
 pacmansync git zsh
 sudo -u "$username" bash -c "curl -L https://install.ohmyz.sh | sh"
 sudo -u "$username" chsh -s /usr/bin/zsh
 
-# 4.1.3 enable pulse audio
+# 5.1.3 enable pulse audio
+loginfo "enabling pulse audio user service"
 mkdir -p /home/$username/.config/systemd/user/default.target.wants
 ln -sf /usr/lib/systemd/user/pulseaudio.service /home/$username/.config/systemd/user/default.target.wants/
 chown -R $username:$username /home/$username/.config
 
-# 4.1.4 install Arch User Repository helper
-log "installing yay"
+# 5.1.4 install Arch User Repository helper
+loginfo "installing yay"
 pacmansync base-devel
 if ! git clone https://aur.archlinux.org/yay.git /opt/yay; then
-  log "error: failed to clone yay repository"
+  logerr "failed to clone yay repository"
   exit 1
 fi
 
 chown -R $username:$username /opt/yay
 if ! sudo -u "$username" makepkg -si -D /opt/yay --noconfirm; then
-  log "error: failed to build yay"
+  logerr "failed to build yay"
   exit 1
 fi
 
-# 4.1.5 collect user preferences
+# 5.1.5 collect user preferences
+loginfo "collecting user preferences"
 install_package_prompt() {
-  echo "Install $@? (y/n)"
+  prompt "Install $@? (y/n)"
   read -r user_input
   if [[ $user_input == "y" ]]; then
-    log "user chose to install $@"
+    loginfo "user chose to install $@"
     return 0
   else
-    log "user chose to not install $@"
+    loginfo "user chose to not install $@"
     return 1
   fi
 }
 
-echo "Install all optional software? (y/n)"
+prompt "Install all optional software? (y/n)"
 read -r install_all
 
 install_minesweeper="y"
@@ -89,9 +92,9 @@ install_steam="y"
 install_vscode="y"
 
 if [[ $install_all == "y" ]]; then
-  log "user chose to install all optional software"
+  loginfo "user chose to install all optional software"
 else
-  log "user chose to not install all optional software"
+  loginfo "user chose to not install all optional software"
 
   if ! install_package_prompt "Minesweeper"; then
     install_minesweeper="n"
@@ -110,7 +113,8 @@ else
   fi
 fi
 
-# 4.2 first-party software
+# 5.2 first-party software
+loginfo "Installing first-party software"
 
 ARCH_INSTALL_DIR="$(dirname "$SCRIPTS_DIR")"
 PACMAN_PACKAGES_FILE_PATH="$ARCH_INSTALL_DIR/pacman-packages"
@@ -125,71 +129,77 @@ while IFS= read -r line; do
   packages+=("$line")
 done <"$PACMAN_PACKAGES_FILE_PATH"
 
-log "Installing ${#packages[@]} pacman packages"
+loginfo "installing $# pacman packages"
 pacmansync "${packages[@]}"
 
-# 4.3 graphics/ui
+# 5.3 graphics/ui
+loginfo "install and configure graphics/ui software"
 
-# 4.3.1 fonts
+# 5.3.1 fonts
+loginfo "copying fonts to system"
 mkdir /usr/share/fonts
 cp /root/tmp/arch-install/fonts/*.ttf /usr/share/fonts/
 fc-cache -fv
 
-# 4.3.2 compositor (non-VM only)
+# 5.3.2 compositor (non-VM only)
+loginfo "installating compositor"
 if systemd-detect-virt -q; then
-  log "VM detected, skipping compositor"
+  loginfo "VM detected, skipping compositor"
 else
   pacmansync picom
 fi
 
-# 4.3.3 display configuration
+# 5.3.3 display configuration
+loginfo "making 'displays' symlink for display configuration software"
 ln -sf /usr/bin/arandr /usr/local/bin/displays
 
-# 4.3.4 NVIDIA drivers
+# 5.3.4 NVIDIA drivers
 if [[ $install_nvidia == "y" ]]; then
+  loginfo "installing nvidia drivers"
   pacmansync nvidia nvidia-utils nvidia-settings
 fi
 
-# 4.4 dotfiles
+# 5.4 dotfiles
+loginfo "clone dotfiles repository"
 if sudo -u "$username" git clone https://github.com/schnyle/dotfiles.git /home/$username/.dotfiles; then
   sudo -u "$username" bash /home/$username/.dotfiles/install.sh
 else
-  log "warning: failed to clone dotfiles repository"
+  logwarn "failed to clone dotfiles repository"
 fi
 
-# 4.5 symlinks
+# 5.5 symlinks
+loginfo "making 'audio' symlink for audio configuration software"
 ln -sf /usr/bin/pavucontrol /usr/local/bin/audio
 
-# 4.6 third-party software
+# 5.6 third-party software
+loginfo "installing third-party software"
 
-log "installing third-party software"
-
-# 4.6.1 minesweeper
+# 5.6.1 minesweeper
 if [[ $install_minesweeper == "y" ]]; then
-  log "installing minesweeper"
+  loginfo "installing minesweeper"
   mkdir -p /opt/minesweeper
   if curl -fL https://github.com/schnyle/minesweeper/releases/latest/download/minesweeper -o /opt/minesweeper/minesweeper; then
     chmod +x /opt/minesweeper/minesweeper
     ln -sf /opt/minesweeper/minesweeper /usr/local/bin/minesweeper
   else
-    log "failed to download minesweeper"
+    logwarn "failed to download minesweeper"
     rm -rf /opt/minesweeper
   fi
 fi
 
-# 4.6.2 steam
+# 5.6.2 steam
 if [[ $install_steam == "y" ]]; then
-  log "installing Steam"
-  log "WARNING: install lib32-nvidia-utils - assumes NVIDIA GPU"
+  loginfo "installing Steam"
+  logwarn "installing lib32-nvidia-utils for Steam - assumes NVIDIA GPU"
   pacmansync steam lib32-nvidia-utils
 fi
 
 # 4.6.3 VS Code
 if [[ $install_vscode == "y" ]]; then
-  log "installing VS Code"
+  loginfo "installing VS Code"
   sudo -u "$username" yay -S --noconfirm visual-studio-code-bin
 
-  log "installing VS Code extensions"
+  loginfo "installing VS Code extensions"
   sudo -u "$username" code --install-extension ms-vscode.cmake-tools
   sudo -u "$username" code --install-extension ms-vscode.cpptools
   sudo -u "$username" code --install-extension vscode-icons-team.vscode-icons
