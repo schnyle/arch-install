@@ -29,6 +29,22 @@ while true; do
   fi
 done
 
+# determine partition suffix based on device type
+if [[ "$device" == nvme* ]]; then
+  suffix="p"
+else
+  suffix=""
+fi
+
+boot_partition="/dev/${device}${suffix}1"
+loginfo "using $boot_partition for boot partition"
+
+swap_partition="/dev/${device}${suffix}2"
+loginfo "using $swap_partition for swap partition"
+
+root_partition="/dev/${device}${suffix}3"
+loginfo "using $root_partition for root partition"
+
 # 1.9 Partition the disks
 loginfo "partitioning the disks"
 sfdisk "/dev/$device" <<EOF
@@ -39,49 +55,49 @@ label: gpt
 write
 EOF
 
-if [[ ! -b "/dev/${device}1" ]]; then
+if [[ ! -b "$boot_partition" ]]; then
   logerr "boot partition not created"
   exit 1
 fi
-if [[ ! -b "/dev/${device}2" ]]; then
+if [[ ! -b "$swap_partition" ]]; then
   logerr "swap partition not created"
   exit 1
 fi
-if [[ ! -b "/dev/${device}3" ]]; then
+if [[ ! -b "$root_partition" ]]; then
   logerr "root partition not created"
   exit 1
 fi
 
 # 1.10 Format the partitions
 loginfo "formatting the partitions"
-if ! mkfs.fat -F32 "/dev/${device}1"; then
+if ! mkfs.fat -F32 "$boot_partition"; then
   logerr "failed to format boot partition"
   exit 1
 fi
 
-if ! mkswap "/dev/${device}2"; then
+if ! mkswap "$swap_partition"; then
   logerr "failed to create swap"
   exit 1
 fi
 
-if ! swapon "/dev/${device}2"; then
+if ! swapon "$swap_partition"; then
   logerr "failed to enable swap"
   exit 1
 fi
 
-if ! mkfs.ext4 "/dev/${device}3"; then
+if ! mkfs.ext4 "$root_partition"; then
   logerr "failed to format root partition"
   exit 1
 fi
 
 # 1.11 Mount the file systems
 loginfo "mounting the file systems"
-if ! mount "/dev/${device}3" /mnt; then
+if ! mount "$root_partition" /mnt; then
   logerr "failed to mount root partition"
   exit 1
 fi
 
-if ! mount --mkdir "/dev/${device}1" /mnt/boot; then
+if ! mount --mkdir "$boot_partition" /mnt/boot; then
   logerr "failed to mount boot partition"
   exit 1
 fi
