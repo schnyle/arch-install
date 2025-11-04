@@ -14,6 +14,11 @@ if ! pacman -S --noconfirm git; then
   exit 1
 fi
 
+if [[ -d $REPO_DIR ]]; then
+  echo "[WARNING] $REPO_DIR exists, removing to allow fresh clone"
+  rm -rf $REPO_DIR
+fi
+
 if ! git clone https://github.com/schnyle/arch-install.git $REPO_DIR; then
   echo "[ERROR] failed to clone arch-install repository" >&2
   exit 1
