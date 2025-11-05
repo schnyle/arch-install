@@ -21,7 +21,8 @@ systemctl start NetworkManager
 # 5.1.1 create new user
 loginfo "Creating new wheel user"
 while true; do
-  prompt "New username:"
+  echo
+  echo "New username:"
   read -r username
   if [[ -z "$username" ]]; then
     logerr "username cannot be empty"
@@ -72,7 +73,8 @@ fi
 # 5.1.5 collect user preferences
 loginfo "collecting user preferences"
 install_package_prompt() {
-  prompt "Install $@? (y/n)"
+  echo
+  echo "Install $@? (y/n)"
   read -r user_input
   if [[ $user_input == "y" ]]; then
     loginfo "user chose to install $@"
@@ -83,7 +85,8 @@ install_package_prompt() {
   fi
 }
 
-prompt "Install all optional software? (y/n)"
+echo
+echo "Install all optional software? (y/n)"
 read -r install_all
 
 install_minesweeper="y"

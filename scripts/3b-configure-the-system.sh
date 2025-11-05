@@ -23,7 +23,8 @@ echo "LANG=en_US.UTF-8" >/etc/locale.conf
 # 3.5 network configuration
 loginfo "creating hostname file"
 while true; do
-  prompt "System hostname:"
+  echo
+  echo "System hostname:"
   read -r hostname
   if echo "$hostname" >/etc/hostname; then
     break

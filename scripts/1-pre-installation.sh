@@ -15,10 +15,12 @@ timedatectl
 # 1.9 Partition the disks
 loginfo "getting disk device name from user"
 while true; do
-  prompt "available devices:"
+  echo
+  echo "available devices:"
   lsblk -d -o NAME,SIZE,TYPE | grep disk
 
-  prompt "enter device name (omit '/dev/'):"
+  echo
+  echo "enter device name (omit '/dev/'):"
   read -r device
 
   if [[ -b "/dev/$device" ]]; then

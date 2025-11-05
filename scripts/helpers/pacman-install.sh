@@ -53,7 +53,8 @@ pacman_single() {
       continue
     fi
 
-    prompt "Failed to install $package ($attempt attempts). Try again? (y/n)"
+    echo
+    echo "Failed to install $package ($attempt attempts). Try again? (y/n)"
     read -r retry
     if [[ $retry == "y" ]]; then
       loginfo "user chose to retry installation of pacman package $package (attempt $attempt)"

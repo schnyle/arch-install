@@ -19,7 +19,7 @@ while true; do
   if pacstrap /mnt base linux linux-firmware networkmanager; then
     break
   else
-    prompt "pacstrap failed (attempt $attempt). Retry? (y/n)"
+    echo "pacstrap failed (attempt $attempt). Retry? (y/n)"
     read -r retry
     if [[ "$retry" != "y" ]]; then
       logerr "could not install essential packages - installation aborted"

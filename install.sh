@@ -42,7 +42,8 @@ if [[ "$1" == "--full" ]]; then
 elif [[ "$1" == "--chroot" ]]; then
   FULL_INSTALL=false
 else
-  prompt "Did you complete steps 1-3.2 manually? (y/n)"
+  echo
+  echo "Did you complete steps 1-3.2 manually? (y/n)"
   read -r response
   loginfo "user responded '$response' to completing steps 1-3.2 manually"
   [[ "$response" == "n" ]] && FULL_INSTALL=true || FULL_INSTALL=false
@@ -66,8 +67,9 @@ if [[ "$FULL_INSTALL" == "true" ]]; then
   loginfo "copying arch-install repo into /mnt"
   cp -r "$REPO_DIR" /mnt/root/tmp/
 
-  loginfo "copying log file into /mnt"
+  loginfo "copying log files into /mnt"
   cp /var/log/arch-install.log /mnt/var/log
+  cp /var/log/arch-install-verbose.log /mnt/var/log
 
   loginfo "chroot'ing into /mnt"
   arch-chroot /mnt bash /root/tmp/arch-install/scripts/3b-configure-the-system.sh
