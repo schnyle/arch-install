@@ -28,13 +28,4 @@ while true; do
   fi
 done
 
-# rest will be moved to main install.sh scripts
-if ! arch-chroot /mnt pacman-key --init; then
-  echo "error: failed to initialize pacman keys"
-  exit 1
-fi
-
-if ! arch-chroot /mnt pacman-key --populate archlinux; then
-  echo "error: failed to populate pacman keys"
-  exit 1
-fi
+arch-chroot /mnt systemctl enable NetworkManager

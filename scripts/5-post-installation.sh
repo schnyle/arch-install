@@ -8,13 +8,22 @@ source "$SCRIPTS_DIR/helpers/pacman-install.sh"
 
 loginfo "starting 5. post-installation"
 
-pacman -Sy
+if ! pacman-key --init; then
+  logerr "failed to initialize pacman keyring"
+  exit 1
+fi
 
-loginfo "enabling multilib repository for 32-bit packages"
+if ! pacman-key --populate archlinux; then
+  logerr "failed to populate archlinux keyring"
+  exit 1
+fi
+#
+# enable multilib repository for 32-bit packages
 sed -i '/^#\[multilib\]/,/^#Include/ {s/^#//; }' /etc/pacman.conf
 
-loginfo "starting networkmanager daemon"
-systemctl start NetworkManager
+if ! pacman -Sy --noconfirm; then
+  logerr "failed to sync package database"
+fi
 
 # 5.1 user setup
 

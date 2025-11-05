@@ -4,6 +4,16 @@ echo "[INFO] cloning arch-install git repo"
 mkdir -p /root/tmp
 REPO_DIR="/root/tmp/arch-install"
 
+if ! pacman-key --init; then
+  echo "[ERROR] failed to initialize pacman keyring" 2>&1
+  exit 1
+fi
+
+if ! pacman-key --populate archlinux; then
+  echo "[ERROR] failed to populate archlinux keyring" 2>&1
+  exit 1
+fi
+
 if ! pacman -Sy --noconfirm; then
   echo "[ERROR] failed to sync package database" >&2
   exit 1
