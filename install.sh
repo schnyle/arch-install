@@ -76,6 +76,7 @@ if [[ "$FULL_INSTALL" == "true" ]]; then
 
   loginfo "copying arch-install repo into /mnt"
   cp -r "$REPO_DIR" /mnt/root/tmp/
+  find /mnt/root/tmp/arch-install/ -type f -name "*.sh" -exec chmod +x {} +
 
   loginfo "copying log files into /mnt"
   cp /var/log/arch-install.log /mnt/var/log
@@ -87,5 +88,8 @@ else
   loginfo "performing chroot installation"
   bash "$REPO_DIR"/scripts/3b-configure-the-system.sh
 fi
+
+loginfo "configuring post-installation auto-run on next reboot"
+source "$REPO_DIR/scripts/helpers/auto-run-post-installation.sh"
 
 bash "$REPO_DIR/scripts/4-reboot.sh"

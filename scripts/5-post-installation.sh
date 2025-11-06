@@ -21,6 +21,17 @@ fi
 # enable multilib repository for 32-bit packages
 sed -i '/^#\[multilib\]/,/^#Include/ {s/^#//; }' /etc/pacman.conf
 
+loginfo "waiting for network connectivity"
+timeout=60
+while ! ping -c 1 8.8.8.8 >/dev/null 2>&1; do
+  if [[ timeout -le 0 ]]; then
+    logerr "failed to establish network connection"
+    exit 1
+  fi
+  sleep 1
+  ((timeout--))
+done
+
 if ! pacman -Sy --noconfirm; then
   logerr "failed to sync package database"
 fi
