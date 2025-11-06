@@ -1,7 +1,10 @@
 #!/bin/bash
 
-# redirect all output to
-exec > >(tee -a /var/log/arch-install-verbose.log) 2>&1
+# redirect all output to verbose log
+if [[ -z "$LOGS_REDIRECTED" ]]; then
+  exec > >(tee -a /var/log/arch-install-verbose.log) 2>&1
+  export LOGS_REDIRECTED=1
+fi
 
 log() {
   msg="$(date '+%Y-%m-%d %H:%M:%S') $*"
