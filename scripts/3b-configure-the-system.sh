@@ -2,9 +2,11 @@
 
 # 3. Configure the system (b)
 
-SCRIPTS_DIR="$(dirname "$(realpath "$0")")"
-source "$SCRIPTS_DIR/log.sh"
-source "$SCRIPTS_DIR/pacman-install.sh"
+SCRIPT_DIR="$(dirname "$(realpath "$0")")"
+source "$SCRIPT_DIR/../bootstrap.sh"
+
+source "$REPO_DIR/scripts/log.sh"
+source "$REPO_DIR/scripts/pacman-install.sh"
 
 pacmansync sudo
 

@@ -2,8 +2,10 @@
 
 # 3. Configure the sytem (a)
 
-SCRIPTS_DIR="$(dirname "$(realpath "$0")")"
-source "$SCRIPTS_DIR/log.sh"
+SCRIPT_DIR="$(dirname "$(realpath "$0")")"
+source "$SCRIPT_DIR/../bootstrap.sh"
+
+source "$REPO_DIR/scripts/log.sh"
 
 loginfo "starting 3. configure the system (a)"
 

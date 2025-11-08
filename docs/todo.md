@@ -1,8 +1,6 @@
 # TODO
 
-- reboot does not work from chroot
-- error handling when `source`ing files
+- fix chroot execution mode
 - 2.1: select the mirrors
-- more error handling in `install.sh`
+- more error handling
 - front load user input
-- auto-login not being removed properly

@@ -2,9 +2,11 @@
 
 # 5. Post-installation
 
-SCRIPTS_DIR="$(dirname "$(realpath "$0")")"
-source "$SCRIPTS_DIR/log.sh"
-source "$SCRIPTS_DIR/pacman-install.sh"
+SCRIPT_DIR="$(dirname "$(realpath "$0")")"
+source "$SCRIPT_DIR/../bootstrap.sh"
+
+source "$REPO_DIR/scripts/log.sh"
+source "$REPO_DIR/scripts/pacman-install.sh"
 
 loginfo "starting 5. post-installation"
 
@@ -143,9 +145,6 @@ fi
 # 5.2 first-party software
 loginfo "Installing first-party software"
 
-ARCH_INSTALL_DIR="$(dirname "$SCRIPTS_DIR")"
-PACMAN_PACKAGES_FILE_PATH="$ARCH_INSTALL_DIR/pacman-packages"
-
 packages=()
 while IFS= read -r line; do
   line="${line%%#*}"
@@ -154,7 +153,7 @@ while IFS= read -r line; do
   [[ -z "$line" ]] && continue
 
   packages+=("$line")
-done <"$PACMAN_PACKAGES_FILE_PATH"
+done <"$REPO_DIR/pacman-packages"
 
 loginfo "installing $# pacman packages"
 pacmansync "${packages[@]}"
@@ -236,4 +235,7 @@ fi
 
 # 5.7 cleanup
 loginfo "cleaning up post-installation"
+
 rm /etc/sudoers.d/temp_install
+
+reboot
