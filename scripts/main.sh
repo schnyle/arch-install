@@ -3,7 +3,6 @@
 SCRIPT_DIR="$(dirname "$(realpath "$0")")"
 source "$SCRIPT_DIR/../bootstrap.sh"
 
-source "$REPO_DIR/scripts/log.sh"
 source "$REPO_DIR/scripts/pacman-install.sh"
 
 loginfo "starting Arch Linux install"
@@ -40,8 +39,8 @@ if [[ "$FULL_INSTALL" == "true" ]]; then
   find /mnt/root/tmp/arch-install/ -type f -name "*.sh" -exec chmod +x {} +
 
   loginfo "copying log files into /mnt"
-  cp /var/log/arch-install.log /mnt/var/log
-  cp /var/log/arch-install-verbose.log /mnt/var/log
+  cp $APP_LOGFILE /mnt/var/log
+  cp $VERBOSE_LOGFILE /mnt/var/log
 
   loginfo "chroot'ing into /mnt"
   arch-chroot /mnt bash /root/tmp/arch-install/scripts/3b-configure-the-system.sh

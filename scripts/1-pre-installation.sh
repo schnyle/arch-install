@@ -5,8 +5,6 @@
 SCRIPT_DIR="$(dirname "$(realpath "$0")")"
 source "$SCRIPT_DIR/../bootstrap.sh"
 
-source "$REPO_DIR/scripts/log.sh"
-
 loginfo "starting 1. pre-installation"
 
 # steps 1.1 - 1.7 assumed to be completed by user

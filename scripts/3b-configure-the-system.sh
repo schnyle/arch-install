@@ -5,7 +5,6 @@
 SCRIPT_DIR="$(dirname "$(realpath "$0")")"
 source "$SCRIPT_DIR/../bootstrap.sh"
 
-source "$REPO_DIR/scripts/log.sh"
 source "$REPO_DIR/scripts/pacman-install.sh"
 
 pacmansync sudo

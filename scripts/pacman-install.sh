@@ -3,8 +3,6 @@
 SCRIPT_DIR="$(dirname "$(realpath "$0")")"
 source "$SCRIPT_DIR/../bootstrap.sh"
 
-source "$REPO_DIR/scripts/log.sh"
-
 DEFAULT_ATTEMPTS=3
 
 pacmansync() {

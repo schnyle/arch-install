@@ -5,8 +5,6 @@
 SCRIPT_DIR="$(dirname "$(realpath "$0")")"
 source "$SCRIPT_DIR/../bootstrap.sh"
 
-source "$REPO_DIR/scripts/log.sh"
-
 loginfo "start 2. installation"
 
 # 2.1 Select the mirrors
