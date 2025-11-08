@@ -64,11 +64,15 @@ done
 
 sed -i "s/^# %wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) ALL/" /etc/sudoers
 
+loginfo "configuring temporary passwordless sudo for $username"
+echo "$username ALL=(ALL) NOPASSWD: ALL" >/etc/sudoers.d/temp_install
+chmod 440 /etc/sudoers.d/temp_install
+
 # 5.1.2 oh-my-zsh
 loginfo "installing oh-my-zsh"
 pacmansync git zsh
 sudo -u "$username" bash -c "curl -L https://install.ohmyz.sh | sh"
-sudo -u "$username" chsh -s /usr/bin/zsh
+chsh -s /usr/bin/zsh "$username"
 
 # 5.1.3 enable pulse audio
 loginfo "enabling pulse audio user service"
@@ -217,7 +221,7 @@ if [[ $install_steam == "y" ]]; then
   pacmansync steam lib32-nvidia-utils
 fi
 
-# 4.6.3 VS Code
+# 5.6.3 VS Code
 if [[ $install_vscode == "y" ]]; then
   loginfo "installing VS Code"
   sudo -u "$username" yay -S --noconfirm visual-studio-code-bin
@@ -229,3 +233,7 @@ if [[ $install_vscode == "y" ]]; then
   sudo -u "$username" code --install-extension tomoki1207.pdf
   sudo -u "$username" code --install-extension mechatroner.rainbow-csv
 fi
+
+# 5.7 cleanup
+loginfo "cleaning up post-installation"
+rm /etc/sudoers.d/temp_install
