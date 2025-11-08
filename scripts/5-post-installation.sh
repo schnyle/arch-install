@@ -77,9 +77,9 @@ chsh -s /usr/bin/zsh "$username"
 
 # 5.1.3 enable pulse audio
 loginfo "enabling pulse audio user service"
-mkdir -p /home/$username/.config/systemd/user/default.target.wants
-ln -sf /usr/lib/systemd/user/pulseaudio.service /home/$username/.config/systemd/user/default.target.wants/
-chown -R $username:$username /home/$username/.config
+mkdir -p "/home/$username/.config/systemd/user/default.target.wants"
+ln -sf /usr/lib/systemd/user/pulseaudio.service "/home/$username/.config/systemd/user/default.target.wants/"
+chown -R "$username:$username" "/home/$username/.config"
 
 # 5.1.4 install Arch User Repository helper
 loginfo "installing yay"
@@ -89,7 +89,7 @@ if ! git clone https://aur.archlinux.org/yay.git /opt/yay; then
   exit 1
 fi
 
-chown -R $username:$username /opt/yay
+chown -R "$username:$username" /opt/yay
 if ! sudo -u "$username" makepkg -si -D /opt/yay --noconfirm; then
   logerr "failed to build yay"
   exit 1
@@ -99,13 +99,13 @@ fi
 loginfo "collecting user preferences"
 install_package_prompt() {
   echo
-  echo "Install $@? (y/n)"
+  echo "Install $*? (y/n)"
   read -r user_input
   if [[ $user_input == "y" ]]; then
-    loginfo "user chose to install $@"
+    loginfo "user chose to install $*"
     return 0
   else
-    loginfo "user chose to not install $@"
+    loginfo "user chose to not install $*"
     return 1
   fi
 }
@@ -186,8 +186,8 @@ fi
 
 # 5.4 dotfiles
 loginfo "clone dotfiles repository"
-if sudo -u "$username" git clone https://github.com/schnyle/dotfiles.git /home/$username/.dotfiles; then
-  sudo -u "$username" bash /home/$username/.dotfiles/install.sh
+if sudo -u "$username" git clone https://github.com/schnyle/dotfiles.git "/home/$username/.dotfiles"; then
+  sudo -u "$username" bash "/home/$username/.dotfiles/install.sh"
 else
   logwarn "failed to clone dotfiles repository"
 fi
