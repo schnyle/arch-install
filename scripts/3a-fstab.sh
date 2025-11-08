@@ -3,7 +3,7 @@
 # 3. Configure the sytem (a)
 
 SCRIPTS_DIR="$(dirname "$(realpath "$0")")"
-source "$SCRIPTS_DIR/helpers/log.sh"
+source "$SCRIPTS_DIR/log.sh"
 
 loginfo "starting 3. configure the system (a)"
 

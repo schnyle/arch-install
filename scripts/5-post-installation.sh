@@ -3,8 +3,8 @@
 # 5. Post-installation
 
 SCRIPTS_DIR="$(dirname "$(realpath "$0")")"
-source "$SCRIPTS_DIR/helpers/log.sh"
-source "$SCRIPTS_DIR/helpers/pacman-install.sh"
+source "$SCRIPTS_DIR/log.sh"
+source "$SCRIPTS_DIR/pacman-install.sh"
 
 loginfo "starting 5. post-installation"
 

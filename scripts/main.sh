@@ -1,7 +1,7 @@
 #!/bin/bash
 
-source "$REPO_DIR/scripts/helpers/log.sh"
-source "$REPO_DIR/scripts/helpers/pacman-install.sh"
+source "$REPO_DIR/scripts/log.sh"
+source "$REPO_DIR/scripts/pacman-install.sh"
 
 loginfo "starting Arch Linux install"
 
@@ -48,6 +48,6 @@ else
 fi
 
 loginfo "configuring post-installation auto-run on next reboot"
-source "$REPO_DIR/scripts/helpers/auto-run-post-installation.sh"
+source "$REPO_DIR/scripts/auto-run-post-installation.sh"
 
 bash "$REPO_DIR/scripts/4-reboot.sh"

@@ -5,3 +5,4 @@
 - 2.1: select the mirrors
 - more error handling in `install.sh`
 - front load user input
+- auto-login not being removed properly

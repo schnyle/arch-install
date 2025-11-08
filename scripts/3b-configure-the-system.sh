@@ -3,8 +3,8 @@
 # 3. Configure the system (b)
 
 SCRIPTS_DIR="$(dirname "$(realpath "$0")")"
-source "$SCRIPTS_DIR/helpers/log.sh"
-source "$SCRIPTS_DIR/helpers/pacman-install.sh"
+source "$SCRIPTS_DIR/log.sh"
+source "$SCRIPTS_DIR/pacman-install.sh"
 
 pacmansync sudo
 

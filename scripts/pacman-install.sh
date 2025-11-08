@@ -1,7 +1,6 @@
 #!/bin/bash
 
-HELPERS_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
-source "$HELPERS_DIR/log.sh"
+source "$REPO_DIR/scripts/log.sh"
 
 DEFAULT_ATTEMPTS=3
 

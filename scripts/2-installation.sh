@@ -3,7 +3,7 @@
 # 2. Installation
 
 SCRIPTS_DIR="$(dirname "$(realpath "$0")")"
-source "$SCRIPTS_DIR/helpers/log.sh"
+source "$SCRIPTS_DIR/log.sh"
 
 loginfo "start 2. installation"
 
@@ -29,3 +29,4 @@ while true; do
 done
 
 arch-chroot /mnt systemctl enable NetworkManager
+
