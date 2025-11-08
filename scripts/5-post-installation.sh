@@ -236,5 +236,3 @@ fi
 loginfo "cleaning up post-installation"
 
 rm /etc/sudoers.d/temp_install
-
-reboot
