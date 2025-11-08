@@ -1,47 +1,5 @@
 #!/bin/bash
 
-echo "[INFO] cloning arch-install git repo"
-mkdir -p /root/tmp
-REPO_DIR="/root/tmp/arch-install"
-
-if ! pacman-key --init; then
-  echo "[ERROR] failed to initialize pacman keyring" 2>&1
-  exit 1
-fi
-
-if ! pacman-key --populate archlinux; then
-  echo "[ERROR] failed to populate archlinux keyring" 2>&1
-  exit 1
-fi
-
-if ! pacman -Sy --noconfirm; then
-  echo "[ERROR] failed to sync package database" >&2
-  exit 1
-fi
-
-if ! pacman -S --noconfirm git; then
-  echo "[ERROR] failed to install git" >&2
-  exit 1
-fi
-
-if [[ -d $REPO_DIR ]]; then
-  echo "[WARNING] $REPO_DIR exists, removing to allow fresh clone"
-  rm -rf $REPO_DIR
-fi
-
-if ! git clone https://github.com/schnyle/arch-install.git $REPO_DIR; then
-  echo "[ERROR] failed to clone arch-install repository" >&2
-  exit 1
-fi
-
-if [[ ! -f "$REPO_DIR/scripts/helpers/log.sh" ]]; then
-  echo "[ERROR] arch-install repository clone incomplete - missing log.sh" >&2
-  exit 1
-fi
-
-echo "[INFO] successfully cloned arch-install git repo"
-
-echo "[INFO] sourcing helper scripts"
 source "$REPO_DIR/scripts/helpers/log.sh"
 source "$REPO_DIR/scripts/helpers/pacman-install.sh"
 
