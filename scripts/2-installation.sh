@@ -2,7 +2,7 @@
 
 # 2. Installation
 
-SCRIPT_DIR="$(dirname "$(realpath "$0")")"
+SCRIPT_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 source "$SCRIPT_DIR/../bootstrap.sh"
 
 loginfo "start 2. installation"

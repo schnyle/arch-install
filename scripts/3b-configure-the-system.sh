@@ -2,7 +2,7 @@
 
 # 3. Configure the system (b)
 
-SCRIPT_DIR="$(dirname "$(realpath "$0")")"
+SCRIPT_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 source "$SCRIPT_DIR/../bootstrap.sh"
 
 source "$REPO_DIR/scripts/pacman-install.sh"
