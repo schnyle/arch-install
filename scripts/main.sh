@@ -7,17 +7,11 @@ source "$REPO_DIR/scripts/pacman-install.sh"
 
 loginfo "starting Arch Linux install"
 
-if [[ "$1" == "--full" ]]; then
-  FULL_INSTALL=true
-elif [[ "$1" == "--chroot" ]]; then
-  FULL_INSTALL=false
-else
-  echo
-  echo "Did you complete steps 1-3.2 manually? (y/n)"
-  read -r response
-  loginfo "user responded '$response' to completing steps 1-3.2 manually"
-  [[ "$response" == "n" ]] && FULL_INSTALL=true || FULL_INSTALL=false
-fi
+echo
+echo "Did you complete steps 1-3.2 manually? (y/n)"
+read -r response
+[[ "$response" == "n" ]] && FULL_INSTALL=true || FULL_INSTALL=false
+loginfo "user responded '$response' to completing steps 1-3.2 manually"
 
 if [[ "$FULL_INSTALL" == "true" ]]; then
   loginfo "performing full installation"
