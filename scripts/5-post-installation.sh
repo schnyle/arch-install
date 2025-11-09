@@ -225,7 +225,16 @@ else
   logwarn "failed to clone dotfiles repository"
 fi
 
-# 5.4.4 symlinks
+# 5.4.4 automatic mirror updates
+loginfo "configuring and enabling reflector service"
+REFLECTOR_CONF_PATH="/etc/xdg/reflector/reflector.conf"
+sed -i "s/--latest .*/--latest 10/" "$REFLECTOR_CONF_PATH"
+sed -i "s/--sort .*/--sort rate/" "$REFLECTOR_CONF_PATH"
+systemctl start reflector.service
+systemctl enable reflector.timer
+systemctl start reflector.timer
+
+# 5.4.5 symlinks
 loginfo "creating convenience symlinks"
 ln -sf /usr/bin/pavucontrol /usr/local/bin/audio
 ln -sf /usr/bin/arandr /usr/local/bin/displays

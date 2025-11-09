@@ -8,8 +8,8 @@ source "$SCRIPT_DIR/../bootstrap.sh"
 loginfo "start 2. installation"
 
 # 2.1 Select the mirrors
-# will add code here
-# reflector --country US --age 12 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
+# use default mirrorlist for initial installation
+# reflector.service is setup in the post-installation script
 
 # 2.2 Install essential packages
 loginfo "installing essential packages with pacstrap"
