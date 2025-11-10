@@ -23,11 +23,11 @@ find /mnt/root/tmp/arch-install/ -type f -name "*.sh" -exec chmod +x {} +
 loginfo "running 3-configure-the-system.sh"
 bash "$REPO_DIR"/scripts/3-configure-the-system.sh
 
+loginfo "configuring post-installation auto-run on next reboot"
+source "$REPO_DIR/scripts/auto-run-post-installation.sh"
+
 loginfo "copying log files into /mnt"
 cp $APP_LOGFILE /mnt/var/log
 cp $VERBOSE_LOGFILE /mnt/var/log
-
-loginfo "configuring post-installation auto-run on next reboot"
-source "$REPO_DIR/scripts/auto-run-post-installation.sh"
 
 bash "$REPO_DIR/scripts/4-reboot.sh"
