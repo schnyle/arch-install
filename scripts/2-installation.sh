@@ -16,7 +16,7 @@ loginfo "installing essential packages with pacstrap"
 attempt=0
 while true; do
   ((attempt++))
-  if pacstrap /mnt base linux linux-firmware networkmanager; then
+  if pacstrap /mnt base linux linux-firmware sudo networkmanager; then
     break
   else
     echo "pacstrap failed (attempt $attempt). Retry? (y/n)"
