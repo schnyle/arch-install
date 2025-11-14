@@ -1,4 +1,3 @@
 # TODO
 
-- more error handling
-- more thorough logging overall
+- logging/error-handling/refactor in 5-post-installation.sh

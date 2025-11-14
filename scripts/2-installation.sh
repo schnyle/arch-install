@@ -5,14 +5,11 @@
 SCRIPT_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 source "$SCRIPT_DIR/../bootstrap.sh"
 
-loginfo "start 2. installation"
-
 # 2.1 Select the mirrors
 # use default mirrorlist for initial installation
 # reflector.service is setup in the post-installation script
 
-# 2.2 Install essential packages
-loginfo "installing essential packages with pacstrap"
+loginfo "2.3 Install essential packages"
 attempt=0
 while true; do
   ((attempt++))
@@ -28,4 +25,7 @@ while true; do
   fi
 done
 
-arch-chroot /mnt systemctl enable NetworkManager
+loginfo "enabling NetworkManager daemon"
+if ! arch-chroot /mnt systemctl enable NetworkManager; then
+  logwarn "failed to enable NetwokManager"
+fi

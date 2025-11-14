@@ -1,10 +1,7 @@
 #!/bin/bash
 
-# 4. Reboot
-
-SCRIPT_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
-source "$SCRIPT_DIR/../bootstrap.sh"
-
-loginfo "starting 4. reboot"
+# yes, this is a script with a single simple command
+# yes, this script is only called once so it can be easily removed
+# no, I'm not going to do that
 
 reboot

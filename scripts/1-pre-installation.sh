@@ -1,35 +1,96 @@
 #!/bin/bash
 
-# 1. Pre-installation
-
 SCRIPT_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 source "$SCRIPT_DIR/../bootstrap.sh"
 
-loginfo "starting 1. pre-installation"
+BOOT_SIZE="512M"
+SWAP_SIZE="2G"
+
+get_device_from_user() {
+  while true; do
+    echo "available devices:"
+    lsblk -d -o NAME,SIZE,TYPE | grep disk
+
+    echo
+    echo "enter device name (omit '/dev/'):"
+    read -r device
+
+    if [[ -b "/dev/$device" ]]; then
+      loginfo "user selected '$device' for disk device"
+      break
+    else
+      logwarn "device '$device' not found, try again"
+    fi
+  done
+}
+
+create_partitions() {
+  sfdisk "/dev/$device" <<EOF
+label: gpt
+,$BOOT_SIZE,U
+,$SWAP_SIZE,S
+,,L
+write
+EOF
+
+  if [[ ! -b "$boot_partition" ]]; then
+    logerr "boot partition not created"
+    return 1
+  fi
+  if [[ ! -b "$swap_partition" ]]; then
+    logerr "swap partition not created"
+    return 1
+  fi
+  if [[ ! -b "$root_partition" ]]; then
+    logerr "root partition not created"
+    return 1
+  fi
+}
+
+format_partitions() {
+  if ! mkfs.fat -F32 "$boot_partition"; then
+    logerr "failed to format boot partition"
+    return 1
+  fi
+
+  if ! mkswap "$swap_partition"; then
+    logerr "failed to create swap"
+    return 1
+  fi
+
+  if ! swapon "$swap_partition"; then
+    logerr "failed to enable swap"
+    return 1
+  fi
+
+  if ! mkfs.ext4 "$root_partition"; then
+    logerr "failed to format root partition"
+    return 1
+  fi
+}
+
+mount_partitions() {
+  if ! mount "$root_partition" /mnt; then
+    logerr "failed to mount root partition"
+    return 1
+  fi
+
+  if ! mount --mkdir "$boot_partition" /mnt/boot; then
+    logerr "failed to mount boot partition"
+    return 1
+  fi
+}
 
 # steps 1.1 - 1.7 assumed to be completed by user
 
-# 1.8 Update the system clock
-timedatectl
+loginfo "1.8 Update the system clock"
+if ! timedatectl; then
+  logwarn "failed to update the system clock"
+fi
 
-# 1.9 Partition the disks
+loginfo "1.9 Partition the disks"
 loginfo "getting disk device name from user"
-while true; do
-  echo
-  echo "available devices:"
-  lsblk -d -o NAME,SIZE,TYPE | grep disk
-
-  echo
-  echo "enter device name (omit '/dev/'):"
-  read -r device
-
-  if [[ -b "/dev/$device" ]]; then
-    loginfo "user selected '$device' for disk device"
-    break
-  else
-    logerr "device not found, try again"
-  fi
-done
+get_device_from_user
 
 # determine partition suffix based on device type
 if [[ "$device" == nvme* ]]; then
@@ -47,59 +108,20 @@ loginfo "using $swap_partition for swap partition"
 root_partition="/dev/${device}${suffix}3"
 loginfo "using $root_partition for root partition"
 
-# 1.9 Partition the disks
 loginfo "partitioning the disks"
-sfdisk "/dev/$device" <<EOF
-label: gpt
-,512M,U
-,2G,S
-,,L
-write
-EOF
-
-if [[ ! -b "$boot_partition" ]]; then
-  logerr "boot partition not created"
-  exit 1
-fi
-if [[ ! -b "$swap_partition" ]]; then
-  logerr "swap partition not created"
-  exit 1
-fi
-if [[ ! -b "$root_partition" ]]; then
-  logerr "root partition not created"
+if ! create_partitions; then
+  logerr "failed to create disk partitions"
   exit 1
 fi
 
-# 1.10 Format the partitions
 loginfo "formatting the partitions"
-if ! mkfs.fat -F32 "$boot_partition"; then
-  logerr "failed to format boot partition"
+if ! format_partitions; then
+  logerr "failed to format the partitions"
   exit 1
 fi
 
-if ! mkswap "$swap_partition"; then
-  logerr "failed to create swap"
-  exit 1
-fi
-
-if ! swapon "$swap_partition"; then
-  logerr "failed to enable swap"
-  exit 1
-fi
-
-if ! mkfs.ext4 "$root_partition"; then
-  logerr "failed to format root partition"
-  exit 1
-fi
-
-# 1.11 Mount the file systems
-loginfo "mounting the file systems"
-if ! mount "$root_partition" /mnt; then
-  logerr "failed to mount root partition"
-  exit 1
-fi
-
-if ! mount --mkdir "$boot_partition" /mnt/boot; then
-  logerr "failed to mount boot partition"
+loginfo "1.11 Mount the file systems"
+if ! mount_partitions; then
+  logerr "failed to mount the file systems"
   exit 1
 fi
