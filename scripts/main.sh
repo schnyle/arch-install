@@ -16,7 +16,7 @@ copy_repo_to_mount() {
     return 1
   fi
 
-  if ! find /mnt/root/tmp/arch-install/ -type f -name "*.sh" -exec chmod +x {} +; then
+  if ! find /mnt/root/tmp/arch/ -type f -name "*.sh" -exec chmod +x {} +; then
     logerr "failed to make repo scripts executable"
     return 1
   fi
@@ -29,9 +29,9 @@ if ! mountpoint -q /mnt; then
   source "$REPO_DIR"/scripts/1-pre-installation.sh
 fi
 
-loginfo "copying arch-install repo into /mnt"
+loginfo "copying arch repo into /mnt"
 if ! copy_repo_to_mount; then
-  logerr "failed to copy arch-install repo into /mnt"
+  logerr "failed to copy arch repo into /mnt"
   exit 1
 fi
 

@@ -29,9 +29,9 @@ If you prefer to handle disk partitioning manually, complete step 1 from the [Ar
 For either option, run this command from the Arch live environment:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/schnyle/arch-install/main/bootstrap.sh | \
+curl -fsSL https://raw.githubusercontent.com/schnyle/arch/main/bootstrap.sh | \
   tee bootstrap.sh | \
-  sha256sum -c <(curl -fsSL https://raw.githubusercontent.com/schnyle/arch-install/main/bootstrap.sh.sha256) && \
+  sha256sum -c <(curl -fsSL https://raw.githubusercontent.com/schnyle/arch/main/bootstrap.sh.sha256) && \
   bash bootstrap.sh
 ```
 

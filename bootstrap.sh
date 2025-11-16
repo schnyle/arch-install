@@ -1,9 +1,9 @@
 #!/bin/bash
 
-REPO_DIR="/root/tmp/arch-install"
-REPO_URL="https://github.com/schnyle/arch-install.git"
-APP_LOGFILE="/var/log/arch-install-app.log"
-VERBOSE_LOGFILE="/var/log/arch-install-verbose.log"
+REPO_DIR="/root/tmp/arch"
+REPO_URL="https://github.com/schnyle/arch.git"
+APP_LOGFILE="/var/log/arch-app.log"
+VERBOSE_LOGFILE="/var/log/arch-verbose.log"
 
 # === logging setup ===
 # (embedded here so bootstrap.sh can log before repo clone)
@@ -88,19 +88,19 @@ clone_repo() {
   fi
 
   if ! git clone "$REPO_URL" "$REPO_DIR"; then
-    logerr "failed to clone arch-install repository"
+    logerr "failed to clone arch repository"
     return 1
   fi
 
   if [[ ! -f "$REPO_DIR/scripts/main.sh" ]]; then
-    logerr "arch-install repository clone incomplete - missing scripts/main.sh"
+    logerr "arch repository clone incomplete - missing scripts/main.sh"
     return 1
   fi
 
 }
 
 if [[ ${BASH_SOURCE[0]} == "$0" && ${#BASH_SOURCE[@]} -eq 1 ]]; then
-  loginfo "running arch-install bootstrap"
+  loginfo "running arch bootstrap"
 
   loginfo "creating directories"
   make_dirs || exit 1
@@ -108,7 +108,7 @@ if [[ ${BASH_SOURCE[0]} == "$0" && ${#BASH_SOURCE[@]} -eq 1 ]]; then
   loginfo "initializing pacman"
   init_pacman || exit 1
 
-  loginfo "cloning arch-install git repo"
+  loginfo "cloning arch git repo"
   clone_repo || exit 1
 
   loginfo "bootstrap complete - running main installation"

@@ -206,7 +206,7 @@ fi
 # 5.4.1 fonts
 loginfo "copying fonts to system"
 mkdir /usr/share/fonts
-cp /root/tmp/arch-install/fonts/*.ttf /usr/share/fonts/
+cp /root/tmp/arch/fonts/*.ttf /usr/share/fonts/
 fc-cache -fv
 
 # 5.4.2 compositor (bare-metal only)
