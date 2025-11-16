@@ -77,8 +77,8 @@ fi
 # configure reflector
 if ! (grep -q "--latest 10" "$REFLECTOR_CONF_PATH" && grep -q "--sort rate" "$REFLECTOR_CONF_PATH"); then
   log "configuring reflector"
-  sed -i "s/--latest .*/--latest 10" "$REFLECTOR_CONF_PATH"
-  sed -i "s/--sort .*/--sort rate" "$REFLECTOR_CONF_PATH"
+  sed -i "s/--latest .*/--latest 10/g" "$REFLECTOR_CONF_PATH"
+  sed -i "s/--sort .*/--sort rate/g" "$REFLECTOR_CONF_PATH"
   arch-chroot /mnt systemctl start reflector.service
 fi
 
@@ -114,7 +114,7 @@ arch-chroot /mnt hwclock --systohc || log "[WARNING] failed to set the hardware 
 # specify locale to use
 if ! grep -q "^en_US.UTF-8 UTF-8" /mnt/etc/locale.gen; then
   log "specifying locale"
-  arch-chroot /mnt sed -i "s/^#en_US.UTF-8/en_US.UTF-8" /etc/locale.gen
+  arch-chroot /mnt sed -i "s/^#en_US.UTF-8/en_US.UTF-8/g" /etc/locale.gen
 fi
 
 # generate locales
